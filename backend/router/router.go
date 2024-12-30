@@ -20,5 +20,9 @@ func FinRoutes(r *gin.Engine, db db.PhiDB) {
 	{
 		user.POST("/signup", controllers.UserSignUp)
 		user.POST("/login", controllers.UserLogin)
+		user.Use(controllers.AuthenticateUser())
+		user.GET("/test", func(ctx *gin.Context) {
+			ctx.JSON(http.StatusOK, "Restricted route")
+		})
 	}
 }

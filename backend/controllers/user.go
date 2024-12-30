@@ -14,49 +14,53 @@ func UserSignUp(c *gin.Context) {
 	var user models.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{ERROR: err.Error()})
 		return
 	}
 
 	if len(user.Email) == 0 || len(user.Password) == 0 {
-		c.JSON(http.StatusOK, gin.H{"error": "Email and password must not be null"})
+		c.JSON(http.StatusOK, gin.H{ERROR: "Email and password must not be null"})
 		return
 	}
 
 	if err := Db.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			c.JSON(http.StatusOK, gin.H{"message": "email id already exists"})
+			c.JSON(http.StatusOK, gin.H{MESSAGE: "email id already exists"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "Failed to create user"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "User created successfully!"})
+	c.JSON(http.StatusOK, gin.H{MESSAGE: "User created successfully!"})
 }
 
 func UserLogin(c *gin.Context) {
 	var user, userRes models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{ERROR: err.Error()})
 		return
 	}
 
 	result := Db.First(&userRes, "email = ?", user.Email)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusOK, gin.H{"message": "Email not found"})
+		c.JSON(http.StatusOK, gin.H{MESSAGE: "Email not found"})
 		return
 	}
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{ERROR: result.Error.Error()})
 		return
 	}
 
 	// If password is wrong
 	if !utils.CheckPassword(user.Password, userRes.Password) {
-		c.JSON(http.StatusOK, gin.H{"message": "Wrong Password"})
+		c.JSON(http.StatusOK, gin.H{MESSAGE: "Wrong Password"})
 		return
 	}
 
-	// TODO: implementing JWT, for now only returning authenticated on successfully login
-	c.JSON(http.StatusOK, gin.H{"message": "authenticated"})
+	if token, err := GenerateJWT(user.ID); err == nil {
+		c.JSON(http.StatusOK, gin.H{MESSAGE: "authenticated", "token": token})
+		return
+	}
+
+	c.JSON(http.StatusInternalServerError, gin.H{ERROR: "Error at our side"})
 }
