@@ -401,6 +401,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Tables --> */}
 
+              {/* <!-- Menu Item Portfolio --> */}
+              <li>
+                <NavLink
+                  to="/portfolio"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('portfolio') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                  className="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                 strokeWidth="2"
+                 strokeLinecap="round"
+                  strokeLinejoin="round"
+                  xmlns="http://www.w3.org/2000/svg"
+                  >
+                <path d="M3 3v18h18" />
+                <path d="M18 17l-5-5-4 4-3-3" />
+                </svg>
+
+                  Portfolio Management
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Portfolio --> */}
 
               {/* <!-- Menu Item Risk Management --> */}
               <li>

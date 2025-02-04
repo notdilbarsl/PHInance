@@ -16,6 +16,7 @@ import RiskManagement from './pages/RiskManagement'
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import Portfolio from './pages/Portfolio';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -79,6 +80,14 @@ function App() {
           element={
             <>
               <Tables />
+            </>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <>
+              <Portfolio />
             </>
           }
         />
