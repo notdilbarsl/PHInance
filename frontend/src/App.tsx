@@ -18,6 +18,7 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Portfolio from './pages/Portfolio';
+import AIPoweredPrediction from './pages/AIPoweredPrediction';
 
 
 function App() {
@@ -109,6 +110,15 @@ function App() {
             </>
           }
         />
+        <Route  
+          path="/ai-powered-prediction"
+          element={
+            <>
+              <AIPoweredPrediction />
+            </>
+          }
+        />
+
         <Route
           path="/settings"
           element={
