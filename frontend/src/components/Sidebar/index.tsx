@@ -476,6 +476,33 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Risk Management --> */}
 
 
+              {/* <!-- Menu Item FAQ --> */}
+              <li>
+                <NavLink
+                  to="/support"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('faq') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-none stroke-current text-white"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 20H12.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7 9C7 7.87439 7.37194 6.83566 7.99963 6C8.91184 4.78555 10.3642 4 12 4C14.7614 4 17 6.23858 17 9C17 11.4212 15.279 13.4405 12.9936 13.9013C12.4522 14.0104 12 14.4477 12 15V15V16" stroke-width="2" stroke-linecap="round"/>
+
+                  </svg>
+                  Support
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item FAQ --> */}
+
+
+
               {/* <!-- Menu Item Settings --> */}
               <li>
                 <NavLink
