@@ -399,7 +399,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Tables
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Tables --> */}
+              {/* <!-- Menu Item AI Powered Prediction --> */}
+
+              <li>
+                <NavLink
+                  to="/ai-powered-prediction"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('my-section') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-current"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3 3h12v12H3V3z"
+                      fill=""
+                    />
+                  </svg>
+                  AI Powered Predictions
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item AI Powered Prediction --> */}
 
               {/* <!-- Menu Item Portfolio --> */}
               <li>
@@ -553,9 +578,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
               OTHERS
             </h3>
-
+            
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item Chart --> */}
+
+
+
               <li>
                 <NavLink
                   to="/chart"
