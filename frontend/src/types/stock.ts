@@ -1,4 +1,4 @@
-export type STOCK = {
+/*export type STOCK = {
     name: string;         // Stock name (e.g., Zomato, SBI, Tata Steel)
     quantity: number;     // Number of shares
     avgPrice: number;     // Average buy price per share
@@ -11,5 +11,24 @@ export type STOCK = {
     previousValue: number;// Total value before today's change
     graphUrl: string;     // URL or path to stock trend graph
   };
+  */
   
-  
+  // Define Stock Data Type
+export type StockHistory = {
+  date: string;
+  qty: number;
+  rate: number;
+  amount: number;
+};
+
+export type STOCK= {
+  name: string;
+  quantity: number;
+  avgPrice: number;
+  marketPrice: number;
+  returns: number;
+  returnsPct: string;
+  currentValue: number;
+  graphUrl: string;
+  history: StockHistory[];
+};

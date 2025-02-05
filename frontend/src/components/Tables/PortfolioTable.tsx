@@ -1,20 +1,26 @@
-import {STOCK} from '../../types/stock.ts';
+import React, { useState } from "react";
 
+// Define Stock Purchase History Data Type
+type StockHistory = {
+  date: string;
+  qty: number;
+  rate: number;
+  amount: number;
+};
 
-type stocks = {
+// Define Main Stock Data Type
+type STOCK = {
   name: string;
   quantity: number;
-  avgPrice: number;
   marketPrice: number;
-  dayChange: number;
-  dayChangePct: string;
   returns: number;
   returnsPct: string;
   currentValue: number;
-  previousValue: number;
   graphUrl: string;
+  history: StockHistory[];
 };
 
+// Portfolio Summary Data
 const holdingsSummary = {
   currentValue: 8340,
   investedValue: 8422,
@@ -24,49 +30,64 @@ const holdingsSummary = {
   oneDayReturnsPct: 0.18,
 };
 
+// Stocks Data
 const stocks: STOCK[] = [
   {
     name: "Zomato",
     quantity: 21,
-    avgPrice: 214.44,
     marketPrice: 238.20,
-    dayChange: 1.88,
-    dayChangePct: "0.80%",
     returns: 498.96,
     returnsPct: "11.08%",
     currentValue: 5002.20,
-    previousValue: 4503.24,
     graphUrl: "/graphs/zomato.png",
+    history: [
+      { date: "2024-01-15", qty: 10, rate: 200, amount: 2000 },
+      { date: "2024-02-10", qty: 5, rate: 220, amount: 1100 },
+      { date: "2024-03-05", qty: 6, rate: 230, amount: 1380 },
+    ],
   },
   {
     name: "SBI",
     quantity: 3,
-    avgPrice: 858.40,
     marketPrice: 760.95,
-    dayChange: -5.05,
-    dayChangePct: "-0.66%",
     returns: -292.35,
     returnsPct: "11.35%",
     currentValue: 2282.85,
-    previousValue: 2575.20,
     graphUrl: "/graphs/sbi.png",
+    history: [
+      { date: "2023-12-20", qty: 1, rate: 850, amount: 850 },
+      { date: "2024-01-10", qty: 2, rate: 870, amount: 1740 },
+    ],
   },
   {
     name: "Tata Steel",
     quantity: 8,
-    avgPrice: 167.94,
     marketPrice: 131.82,
-    dayChange: -1.15,
-    dayChangePct: "-0.86%",
     returns: -288.96,
     returnsPct: "21.51%",
     currentValue: 1054.56,
-    previousValue: 1343.52,
     graphUrl: "/graphs/tata_steel.png",
+    history: [
+      { date: "2023-11-05", qty: 4, rate: 160, amount: 640 },
+      { date: "2023-12-18", qty: 4, rate: 175, amount: 700 },
+    ],
   },
 ];
 
+// Function to Calculate Average Price from History
+const calculateAvgPrice = (history: StockHistory[]): number => {
+  const totalAmount = history.reduce((sum, entry) => sum + entry.amount, 0);
+  const totalQuantity = history.reduce((sum, entry) => sum + entry.qty, 0);
+  return totalQuantity > 0 ? totalAmount / totalQuantity : 0;
+};
+
 export default function PortfolioDashboard() {
+  const [openStock, setOpenStock] = useState<string | null>(null);
+
+  const toggleDropdown = (stockName: string) => {
+    setOpenStock(openStock === stockName ? null : stockName);
+  };
+
   return (
     <div className="w-full h-screen px-12 py-6">
       {/* Holdings Summary Section */}
@@ -106,43 +127,71 @@ export default function PortfolioDashboard() {
             </tr>
           </thead>
           <tbody>
-            {stocks.map((stock) => (
-              <tr key={stock.name} className="border-b">
-                {/* Company Name & Shares */}
-                <td className="px-6 py-4">
-                  <div className="font-medium">{stock.name}</div>
-                  <div className="text-xs text-gray-500">
-                    Qty {stock.quantity} • Avg. ₹{stock.avgPrice.toFixed(2)}
-                  </div>
-                </td>
+            {stocks.map((stock) => {
+              const avgPrice = calculateAvgPrice(stock.history);
+              return (
+                <React.Fragment key={stock.name}>
+                  <tr className="border-b">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-medium">{stock.name}</div>
+                          <div className="text-xs text-gray-500">
+                            Qty {stock.quantity} • Avg. ₹{avgPrice.toFixed(2)}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => toggleDropdown(stock.name)}
+                          className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                        >
+                          {openStock === stock.name ? "▲" : "▼"}
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <img src={stock.graphUrl} alt={`${stock.name} trend`} className="w-40 h-14 object-contain" />
+                    </td>
+                    <td className="px-6 py-4 text-lg">₹{stock.marketPrice.toFixed(2)}</td>
+                    <td className={`px-6 py-4 font-semibold text-lg ${stock.returns >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      {stock.returns >= 0 ? "+" : ""}
+                      ₹{stock.returns.toFixed(2)} ({stock.returnsPct})
+                    </td>
+                    <td className="px-6 py-4 text-lg">₹{stock.currentValue.toFixed(2)}</td>
+                  </tr>
 
-                {/* Graph Column */}
-                <td className="px-6 py-4">
-                  <img
-                    src={stock.graphUrl}
-                    alt={`${stock.name} trend`}
-                    className="w-40 h-14 object-contain"
-                  />
-                </td>
-
-                {/* Market Price */}
-                <td className="px-6 py-4 text-lg">₹{stock.marketPrice.toFixed(2)}</td>
-
-                {/* Returns (Color-Coded) */}
-                <td className={`px-6 py-4 font-semibold text-lg ${stock.returns >= 0 ? "text-green-500" : "text-red-500"}`}>
-                  {stock.returns >= 0 ? "+" : ""}
-                  ₹{stock.returns.toFixed(2)} ({stock.returnsPct})
-                </td>
-
-                {/* Current Value */}
-                <td className="px-6 py-4 text-lg">₹{stock.currentValue.toFixed(2)}</td>
-              </tr>
-            ))}
+                  {openStock === stock.name && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-3 bg-gray-50">
+                        <h3 className="font-semibold mb-2">History</h3>
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b">
+                              <th className="px-4 py-2">Date</th>
+                              <th className="px-4 py-2">Qty</th>
+                              <th className="px-4 py-2">Rate</th>
+                              <th className="px-4 py-2">Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {stock.history.map((entry, index) => (
+                              <tr key={index} className="border-b">
+                                <td className="px-4 py-2">{entry.date}</td>
+                                <td className="px-4 py-2">{entry.qty}</td>
+                                <td className="px-4 py-2">₹{entry.rate}</td>
+                                <td className="px-4 py-2">₹{entry.amount}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
-
-     
     </div>
   );
 }
