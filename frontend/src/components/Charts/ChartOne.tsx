@@ -13,45 +13,19 @@ const options: ApexOptions = {
     fontFamily: 'Satoshi, sans-serif',
     height: 335,
     type: 'area',
-    dropShadow: {
+    animations: {
       enabled: true,
-      color: '#623CEA14',
-      top: 10,
-      blur: 4,
-      left: 0,
-      opacity: 0.1,
+      easing: 'easeinout',
+      speed: 800,
     },
-
     toolbar: {
       show: false,
     },
   },
-  responsive: [
-    {
-      breakpoint: 1024,
-      options: {
-        chart: {
-          height: 300,
-        },
-      },
-    },
-    {
-      breakpoint: 1366,
-      options: {
-        chart: {
-          height: 350,
-        },
-      },
-    },
-  ],
   stroke: {
     width: [2, 2],
-    curve: 'straight',
+    curve: 'smooth',
   },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
   grid: {
     xaxis: {
       lines: {
@@ -72,77 +46,58 @@ const options: ApexOptions = {
     colors: '#fff',
     strokeColors: ['#3056D3', '#80CAEE'],
     strokeWidth: 3,
-    strokeOpacity: 0.9,
-    strokeDashArray: 0,
-    fillOpacity: 1,
-    discrete: [],
-    hover: {
-      size: undefined,
-      sizeOffset: 5,
-    },
   },
   xaxis: {
     type: 'category',
-    categories: [
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-    ],
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
+    categories: [],
   },
   yaxis: {
-    title: {
-      style: {
-        fontSize: '0px',
-      },
-    },
     min: 0,
     max: 100,
   },
 };
 
-interface ChartOneState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
+const dayData = [
+  { name: 'Total Profit', data: [15, 20, 18, 25, 37, 15, 19] },
+  { name: 'Total Capital Invested', data: [30, 42, 36, 60, 48, 54, 45] },
+];
+
+const weekData = [
+  { name: 'Total Profit', data: [20, 30, 40, 50, 60, 45, 55] },
+  { name: 'Total Capital Invested', data: [50, 60, 70, 80, 90, 85, 95] },
+];
+
+const monthData = [
+  { name: 'Total Profit', data: [50, 60, 80, 90, 100, 110, 120] },
+  { name: 'Total Capital Invested', data: [120, 140, 160, 180, 200, 220, 250] },
+];
+
+const categories = {
+  day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  week: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'],
+  month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+};
 
 const ChartOne: React.FC = () => {
-  const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: 'Product One',
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
+  const [selectedRange, setSelectedRange] = useState<'day' | 'week' | 'month'>(
+    'day'
+  );
+  const [series, setSeries] = useState(dayData);
+  const [xAxisCategories, setXAxisCategories] = useState(categories.day);
 
-      {
-        name: 'Product Two',
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
-    ],
-  });
-
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
+  const handleRangeChange = (range: 'day' | 'week' | 'month') => {
+    setSelectedRange(range);
+    if (range === 'day') {
+      setSeries(dayData);
+      setXAxisCategories(categories.day);
+    } else if (range === 'week') {
+      setSeries(weekData);
+      setXAxisCategories(categories.week);
+    } else {
+      setSeries(monthData);
+      setXAxisCategories(categories.month);
+    }
   };
-  handleReset;
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -153,8 +108,8 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-primary">Total Money Invested</p>
+              <p className="text-sm font-medium">Last {selectedRange}</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -162,20 +117,41 @@ const ChartOne: React.FC = () => {
               <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="font-semibold text-secondary">Total Profit</p>
+              <p className="text-sm font-medium">Last {selectedRange}</p>
             </div>
           </div>
         </div>
         <div className="flex w-full max-w-45 justify-end">
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => handleRangeChange('day')}
+              className={`rounded py-1 px-3 text-xs font-medium ${
+                selectedRange === 'day'
+                  ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
+                  : 'text-black dark:text-white'
+              }`}
+            >
               Day
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => handleRangeChange('week')}
+              className={`rounded py-1 px-3 text-xs font-medium ${
+                selectedRange === 'week'
+                  ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
+                  : 'text-black dark:text-white'
+              }`}
+            >
               Week
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button
+              onClick={() => handleRangeChange('month')}
+              className={`rounded py-1 px-3 text-xs font-medium ${
+                selectedRange === 'month'
+                  ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
+                  : 'text-black dark:text-white'
+              }`}
+            >
               Month
             </button>
           </div>
@@ -185,8 +161,8 @@ const ChartOne: React.FC = () => {
       <div>
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
-            options={options}
-            series={state.series}
+            options={{ ...options, xaxis: { ...options.xaxis, categories: xAxisCategories } }}
+            series={series}
             type="area"
             height={350}
           />

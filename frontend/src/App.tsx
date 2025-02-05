@@ -19,6 +19,7 @@ import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 import Portfolio from './pages/Portfolio';
 import AIPoweredPrediction from './pages/AIPoweredPrediction';
+import Behavioural from './pages/Behavioural';
 
 
 function App() {
@@ -95,6 +96,14 @@ function App() {
           }
         />
         <Route
+          path="/Behavioural"
+          element={
+            <>
+              <Behavioural />
+            </>
+          }
+        />
+        <Route
           path="/riskmanagement"
           element={
             <>
@@ -102,6 +111,7 @@ function App() {
             </>
           }
         />
+
         <Route
           path="/support"
           element={

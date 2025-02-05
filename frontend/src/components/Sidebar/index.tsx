@@ -248,6 +248,43 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Portfolio --> */}
 
+              {/* <!-- Menu Item Behavioural Ananlytics --> */}
+              <li>
+                <NavLink
+                  to="/Behavioural"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('Behavioural') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                <svg
+  className="fill-none stroke-current text-white"
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  
+  <path
+    d="M4 20V14M10 20V10M16 20V6M22 20V2"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</svg>
+
+
+
+
+
+
+
+                Behavioural Analytics
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Behavioural Analytics--> */}
+              
               {/* <!-- Menu Item Risk Management --> */}
               <li>
                 <NavLink
