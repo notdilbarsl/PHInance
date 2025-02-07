@@ -20,7 +20,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import Portfolio from './pages/Portfolio';
 import AIPoweredPrediction from './pages/AIPoweredPrediction';
 import Behavioural from './pages/Behavioural';
-
+import StockScreener from './pages/StockScreener';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,7 +111,14 @@ function App() {
             </>
           }
         />
-
+        <Route
+          path="/stockscreener"
+          element={
+            <>
+              <StockScreener />
+            </>
+          }
+        />
         <Route
           path="/support"
           element={
@@ -120,7 +127,7 @@ function App() {
             </>
           }
         />
-        <Route  
+        <Route
           path="/ai-powered-prediction"
           element={
             <>
