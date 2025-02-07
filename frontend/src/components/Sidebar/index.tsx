@@ -188,8 +188,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               {/* <!-- Menu Item Profile --> */}
 
-              {/* <!-- Menu Item Forms --> */}
-              {/* <!-- Menu Item Forms --> */}
+              {/* <!-- Menu Item Buy and Sell Stocks --> */}
+              <li>
+                <NavLink
+                  to="/buysellstocks"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-none"
+                    width="24"
+                    height="24"
+                    viewBox="40 -1 170 250"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M153 23h41l15-23H55L40 23h26c27 0 52 2 62 25H55L40 71h91v1c0 17-14 43-60 43H48v22l90 113h41L85 133c39-2 75-24 80-62h29l15-23h-45c-1-9-5-18-11-25z"
+                      fill="white"
+                    />
+                  </svg>
+                  Buy And Sell Stocks
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Tables --> */}
               <li>
