@@ -19,6 +19,16 @@ type User struct {
 	Dob        time.Time `                   gorm:"type:date"`
 }
 
+/*
+Methods:
+
+register
+login
+logout
+edit profile
+getPortfolio
+*/
+
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 	hashedPassword, err := utils.HashPassword(u.Password)
 	if err != nil {

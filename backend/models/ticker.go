@@ -7,3 +7,11 @@ type Ticker struct {
 	Name   string `json:"name"`
 	Symbol string `json:"symbol" gorm:"unique;not null"`
 }
+
+/*
+
+Methods
+
+getPrice()
+
+*/

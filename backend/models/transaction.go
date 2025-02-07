@@ -7,3 +7,11 @@ type Transaction struct {
 	UserID uint
 	User
 }
+
+/*
+
+Methods:
+
+Execute
+
+*/
