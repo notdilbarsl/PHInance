@@ -16,11 +16,14 @@ import RiskManagement from './pages/RiskManagement'
 import Support from './pages/Support';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+import BuyOrder from './pages/BuyOrder';
 import DefaultLayout from './layout/DefaultLayout';
 import Portfolio from './pages/Portfolio';
 import AIPoweredPrediction from './pages/AIPoweredPrediction';
 import Behavioural from './pages/Behavioural';
 import StockScreener from './pages/StockScreener';
+import SellOrder from './pages/SellOrder';
+import BuyAndSellStocks from './pages/BuyAndSellStocks';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -92,6 +95,30 @@ function App() {
           element={
             <>
               <Portfolio />
+            </>
+          }
+        />
+        <Route
+          path="/buyorder"
+          element={
+            <>
+              <BuyOrder />
+            </>
+          }
+        />
+        <Route
+          path="/sellorder"
+          element={
+            <>
+              <SellOrder />
+            </>
+          }
+        />
+        <Route
+          path="/buysellstocks"
+          element={
+            <>
+              <BuyAndSellStocks />
             </>
           }
         />
