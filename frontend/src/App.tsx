@@ -12,9 +12,15 @@ import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
+import RiskManagement from './pages/RiskManagement'
+import Support from './pages/Support';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import Portfolio from './pages/Portfolio';
+import AIPoweredPrediction from './pages/AIPoweredPrediction';
+import Behavioural from './pages/Behavioural';
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -81,6 +87,48 @@ function App() {
             </>
           }
         />
+        <Route
+          path="/portfolio"
+          element={
+            <>
+              <Portfolio />
+            </>
+          }
+        />
+        <Route
+          path="/Behavioural"
+          element={
+            <>
+              <Behavioural />
+            </>
+          }
+        />
+        <Route
+          path="/riskmanagement"
+          element={
+            <>
+              <RiskManagement />
+            </>
+          }
+        />
+
+        <Route
+          path="/support"
+          element={
+            <>
+              <Support />
+            </>
+          }
+        />
+        <Route  
+          path="/ai-powered-prediction"
+          element={
+            <>
+              <AIPoweredPrediction />
+            </>
+          }
+        />
+
         <Route
           path="/settings"
           element={
