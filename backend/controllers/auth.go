@@ -15,7 +15,7 @@ func GenerateJWT(userId uint) (string, error) {
 		"exp":     time.Now().Add(time.Hour * 72).Unix(), // 72 Hours expiration
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(JwtSecret)
+	return token.SignedString(jwtSecret)
 }
 
 func AuthenticateUser() gin.HandlerFunc {
@@ -38,7 +38,7 @@ func AuthenticateUser() gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
-			return JwtSecret, nil
+			return jwtSecret, nil
 		})
 
 		if err != nil || !token.Valid {

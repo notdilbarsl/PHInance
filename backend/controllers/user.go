@@ -23,7 +23,7 @@ func UserSignUp(c *gin.Context) {
 		return
 	}
 
-	if err := Db.Create(&user).Error; err != nil {
+	if err := phiDb.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			c.JSON(http.StatusOK, gin.H{MESSAGE: "email id already exists"})
 			return
@@ -41,7 +41,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 
-	result := Db.First(&userRes, "email = ?", user.Email)
+	result := phiDb.First(&userRes, "email = ?", user.Email)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusOK, gin.H{MESSAGE: "Email not found"})
 		return

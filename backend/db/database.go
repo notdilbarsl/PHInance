@@ -4,16 +4,20 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/sayymeer/feinance-backend/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type PhiDB struct {
-	*gorm.DB
+// Loading .env file here because this init function will be executed first
+func init() {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
 }
 
-func InitDB() *PhiDB {
+func InitDB() *gorm.DB {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	user := os.Getenv("DB_USER")
@@ -39,5 +43,5 @@ func InitDB() *PhiDB {
 
 	db.AutoMigrate(&models.User{})
 	fmt.Println("Connected to database")
-	return &PhiDB{db}
+	return db
 }
