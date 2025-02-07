@@ -5,16 +5,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sayymeer/feinance-backend/controllers"
-	"github.com/sayymeer/feinance-backend/db"
 )
 
-func FinRoutes(r *gin.Engine, db db.PhiDB) {
+func FinRoutes(r *gin.Engine) {
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "Hello World")
 	})
 
 	// assigning here to save some memory
-	controllers.Db = db
 
 	user := r.Group("/user")
 	{

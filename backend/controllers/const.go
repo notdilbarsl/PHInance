@@ -4,11 +4,16 @@ import (
 	"os"
 
 	"github.com/sayymeer/feinance-backend/db"
+	"gorm.io/gorm"
 )
 
-var Db db.PhiDB
+var phiDb *gorm.DB
 
-var JwtSecret = []byte(os.Getenv("JWT_SECRET"))
+func init() {
+	phiDb = db.InitDB()
+}
+
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 const (
 	MESSAGE = "message"
