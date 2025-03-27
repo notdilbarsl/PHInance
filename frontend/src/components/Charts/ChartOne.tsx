@@ -52,7 +52,7 @@ const options: ApexOptions = {
     categories: [],
   },
   yaxis: {
-    min: 0,
+    min: -100,
     max: 100,
   },
 };
@@ -126,31 +126,28 @@ const ChartOne: React.FC = () => {
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
             <button
               onClick={() => handleRangeChange('day')}
-              className={`rounded py-1 px-3 text-xs font-medium ${
-                selectedRange === 'day'
+              className={`rounded py-1 px-3 text-xs font-medium ${selectedRange === 'day'
                   ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
                   : 'text-black dark:text-white'
-              }`}
+                }`}
             >
               Day
             </button>
             <button
               onClick={() => handleRangeChange('week')}
-              className={`rounded py-1 px-3 text-xs font-medium ${
-                selectedRange === 'week'
+              className={`rounded py-1 px-3 text-xs font-medium ${selectedRange === 'week'
                   ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
                   : 'text-black dark:text-white'
-              }`}
+                }`}
             >
               Week
             </button>
             <button
               onClick={() => handleRangeChange('month')}
-              className={`rounded py-1 px-3 text-xs font-medium ${
-                selectedRange === 'month'
+              className={`rounded py-1 px-3 text-xs font-medium ${selectedRange === 'month'
                   ? 'bg-white text-black shadow-card dark:bg-boxdark dark:text-white'
                   : 'text-black dark:text-white'
-              }`}
+                }`}
             >
               Month
             </button>

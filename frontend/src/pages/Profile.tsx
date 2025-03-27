@@ -23,6 +23,7 @@ interface Transaction {
   amount: number;
   ticker: string;
   quantity: number;
+  date: string;
 }
 
 const Profile = () => {
@@ -33,8 +34,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming token is stored here
-        const response = await fetch('/api/profile', {
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDMzMDM2ODAsInVzZXJfaWQiOjF9.O-wEfHBhLlOIWlVQ2xvdzqLF1gh7Op3-hChcJ3bVCLQ"; // Assuming token is stored here
+        const response = await fetch('http://localhost:8080/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -81,14 +82,9 @@ const Profile = () => {
             <nav className="mt-6">
               <ul className="space-y-3">
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Basic Details</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Financial Reports</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Trading Preference</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Active Devices</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Report Suspicious Activity</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Change User Details</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Change Password</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Logout</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Temporarily Disable Account</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Permanently Delete Account</Link></li>
               </ul>
             </nav>
@@ -142,9 +138,16 @@ const Profile = () => {
               <div className="mt-4 space-y-3">
                 {transactions.map((tx) => (
                   <div key={tx.ticker} className="flex justify-between p-4 bg-gray-100 rounded-lg">
-                    <p className="text-md font-medium">Type: ₹{tx.type}</p>
-                    <p className="text-md font-medium">Quantity: ₹{tx.quantity}</p>
+                    <p className="text-md font-medium"><strong>{tx.ticker}</strong></p>
+                    <p
+                      className={`text-md font-medium ${tx.type === "BUY" ? "text-green-500" : tx.type === "SELL" ? "text-red-500" : ""
+                        }`}
+                    >
+                      {tx.type}
+                    </p>
+                    <p className="text-md font-medium">Quantity: {tx.quantity}</p>
                     <p className="text-md font-medium">Price: ₹{tx.amount}</p>
+                    <p className="text-md font-medium">Date: {tx.date}</p>
                   </div>
                 ))}
               </div>
