@@ -10,13 +10,14 @@ import (
 // TODO: To add validation tags
 type User struct {
 	gorm.Model
-	Password   string    `json:"password"`
-	Email      string    `json:"email"       gorm:"unique;not null"`
-	Name       string    `json:"name"`
-	Balance    float32   `json:"balance"`
-	IsVerified bool      `json:"is_verified"`
-	Phone      string    `json:"phone_no"`
-	Dob        time.Time `                   gorm:"type:date"`
+	Password     string        `json:"password"`
+	Email        string        `json:"email"       gorm:"unique;not null"`
+	Name         string        `json:"name"`
+	Balance      float32       `json:"balance"`
+	IsVerified   bool          `json:"is_verified"`
+	Phone        string        `json:"phone_no"`
+	Dob          time.Time     `json:"dob"         gorm:"type:date"`
+	Transactions []Transaction `                   gorm:"foreignKey:UserID"`
 }
 
 /*

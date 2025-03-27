@@ -22,7 +22,7 @@ func UserSignUp(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{ERROR: "Email and password must not be null"})
 		return
 	}
-
+	user.Balance = 25000
 	if err := phiDb.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			c.JSON(http.StatusOK, gin.H{MESSAGE: "email id already exists"})
@@ -56,8 +56,7 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{MESSAGE: "Wrong Password"})
 		return
 	}
-
-	if token, err := GenerateJWT(user.ID); err == nil {
+	if token, err := GenerateJWT(userRes.ID); err == nil {
 		c.JSON(http.StatusOK, gin.H{MESSAGE: "authenticated", "token": token})
 		return
 	}

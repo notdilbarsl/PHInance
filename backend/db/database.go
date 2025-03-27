@@ -41,7 +41,16 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(
+		&models.User{},
+		&models.Transaction{},
+		&models.Ticker{},
+		&models.PortfolioStock{},
+	)
+	tickers := models.GetNiftyFifty()
+	for _, ticker := range tickers {
+		db.FirstOrCreate(&ticker, models.Ticker{Symbol: ticker.Symbol})
+	}
 	fmt.Println("Connected to database")
 	return db
 }
