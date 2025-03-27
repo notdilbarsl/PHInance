@@ -1,22 +1,71 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import profilePic from '../images/user/user-06.png';
-import stockIcon from '../images/user/user-06.png';
-import aaplIcon from '../images/icon/apple.png';
-import tslaIcon from '../images/icon/tesla.png';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  balance: number;
+}
+
+interface Stock {
+  id: number;
+  ticker_id: string;
+  avg_price: number;
+  quantity: number;
+}
+
+interface Transaction {
+  type: string;
+  amount: number;
+  ticker: string;
+  quantity: number;
+}
 
 const Profile = () => {
-  const [balance, setBalance] = useState(50000); // Fake balance money
-  const [stocks, setStocks] = useState([
-    { id: 1, name: 'AAPL', image: aaplIcon, boughtPrice: 150, currentPrice: 160, date: '2025-02-01' },
-    { id: 2, name: 'TSLA', image: tslaIcon, boughtPrice: 600, currentPrice: 590, date: '2025-02-02' },
-  ]);
+  const [user, setUser] = useState<User | null>(null);
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const [transactions, setTransactions] = useState([
-    { id: 1, spent: 5000, earned: 0, date: '2025-02-01' },
-    { id: 2, spent: 0, earned: 6000, date: '2025-02-02' },
-  ]);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Assuming token is stored here
+        const response = await fetch('/api/profile', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+
+        const data = await response.json();
+        setUser({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          balance: data.balance,
+        });
+        setStocks(data.stocks);
+        setTransactions(data.transactions);
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (!user) {
+    return <div>Loading...</div>; // Show a loading state until user data is fetched
+  }
 
   return (
     <>
@@ -27,7 +76,7 @@ const Profile = () => {
           <aside className="w-1/4 bg-black text-white p-4">
             <div className="text-center">
               <img src={profilePic} alt="Profile" className="w-24 h-24 rounded-full mx-auto" />
-              <h2 className="mt-4 text-lg font-semibold">John Doe</h2>
+              <h2 className="mt-4 text-lg font-semibold">{user.name}</h2>
             </div>
             <nav className="mt-6">
               <ul className="space-y-3">
@@ -48,16 +97,19 @@ const Profile = () => {
           <div className="w-3/4 p-6">
             <h3 className="text-lg font-semibold border-b pb-2">Profile Details</h3>
             <div className="grid grid-cols-2 gap-6 mt-4">
-              <p><strong>Name:</strong> John Doe</p>
-              <p><strong>Email:</strong> johndoe@example.com</p>
-              <p><strong>Phone:</strong> +91 98765 43210</p>
-              <p><strong>Unique Client Code:</strong> 1399842635</p>
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Phone:</strong> {user.phone}</p>
+              <p><strong>Unique Client Code:</strong> {user.id}</p>
             </div>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold border-b pb-2">Balance</h3>
-              <p className="text-xl font-bold text-green-600">₹{balance.toLocaleString()}</p>
+              <p className="text-xl font-bold text-green-600">₹{user.balance.toLocaleString()}</p>
             </div>
+
+
+
 
             <div className="mt-6">
               <div className="flex justify-between border-b pb-2">
@@ -68,15 +120,14 @@ const Profile = () => {
                 {stocks.map((stock) => (
                   <div key={stock.id} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
                     <div className="flex items-center gap-4">
-                      <img src={stock.image} alt={stock.name} className="w-12 h-12 rounded" />
                       <div>
-                        <h4 className="text-md font-medium">{stock.name}</h4>
-                        <p className="text-sm text-gray-500">{stock.date}</p>
+                        <h4 className="text-md font-medium">{stock.id}</h4>
+                        <p className="text-sm text-gray-500">{stock.ticker_id}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-md font-medium">Bought: ₹{stock.boughtPrice}</p>
-                      <p className="text-md font-medium">Current: ₹{stock.currentPrice}</p>
+                      <p className="text-md font-medium">Average Price: ₹{stock.avg_price}</p>
+                      <p className="text-md font-medium">Quantity: ₹{stock.quantity}</p>
                     </div>
                   </div>
                 ))}
@@ -90,10 +141,10 @@ const Profile = () => {
               </div>
               <div className="mt-4 space-y-3">
                 {transactions.map((tx) => (
-                  <div key={tx.id} className="flex justify-between p-4 bg-gray-100 rounded-lg">
-                    <p className="text-md font-medium">Spent: ₹{tx.spent}</p>
-                    <p className="text-md font-medium">Earned: ₹{tx.earned}</p>
-                    <p className="text-sm text-gray-500">{tx.date}</p>
+                  <div key={tx.ticker} className="flex justify-between p-4 bg-gray-100 rounded-lg">
+                    <p className="text-md font-medium">Type: ₹{tx.type}</p>
+                    <p className="text-md font-medium">Quantity: ₹{tx.quantity}</p>
+                    <p className="text-md font-medium">Price: ₹{tx.amount}</p>
                   </div>
                 ))}
               </div>
