@@ -63,3 +63,10 @@ func UserLogin(c *gin.Context) {
 
 	c.JSON(http.StatusInternalServerError, gin.H{ERROR: "Error at our side"})
 }
+
+func BalanceHandler(c *gin.Context) {
+	user_id, _ := c.Get("user_id")
+	var user models.User
+	phiDb.First(&user, "id = ?", user_id)
+	c.JSON(http.StatusOK, user.Balance)
+}

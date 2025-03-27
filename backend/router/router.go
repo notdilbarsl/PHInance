@@ -21,5 +21,7 @@ func FinRoutes(r *gin.Engine) {
 		user.Use(controllers.AuthenticateUser())
 		user.GET("/profile", controllers.ProfileHandler)
 		user.POST("/transaction", controllers.TransactionHandler)
+		user.GET("/portfolio", controllers.PortfolioHandler)
+		user.GET("/balance", controllers.BalanceHandler)
 	}
 }
