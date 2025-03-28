@@ -35,7 +35,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authToken") // Assuming token is stored here
-        const response = await fetch('http://localhost:8080/user/profile', {
+        const response = await fetch('https://phinance-backend.onrender.com/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

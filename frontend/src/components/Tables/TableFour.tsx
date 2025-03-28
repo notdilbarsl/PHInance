@@ -15,8 +15,8 @@ interface VaRData {
   var1Month: number;
 }
 
-const NIFTY_VOLATILITY = 0.01; 
-const CONFIDENCE_Z_SCORE = 1.65; 
+const NIFTY_VOLATILITY = 0.01;
+const CONFIDENCE_Z_SCORE = 1.65;
 const TRADING_DAYS_MONTH = 21;
 
 const TableFour = () => {
@@ -28,7 +28,7 @@ const TableFour = () => {
     const investment = avgPrice * quantity;
     const dailyVaR = investment * CONFIDENCE_Z_SCORE * NIFTY_VOLATILITY;
     const monthlyVaR = dailyVaR * Math.sqrt(TRADING_DAYS_MONTH);
-    
+
     return {
       dailyVaR,
       monthlyVaR
@@ -38,8 +38,8 @@ const TableFour = () => {
   useEffect(() => {
     const fetchStockData = async () => {
       try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDMzMDM2ODAsInVzZXJfaWQiOjF9.O-wEfHBhLlOIWlVQ2xvdzqLF1gh7Op3-hChcJ3bVCLQ";
-        const response = await fetch('http://localhost:8080/user/profile', {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch('https://phinance-backend.onrender.com/user/profile', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -108,11 +108,10 @@ const TableFour = () => {
 
         {varData.map((stock, key) => (
           <div
-            className={`grid grid-cols-[2fr_1.5fr_1.2fr_1.5fr_1.5fr] ${
-              key === varData.length - 1
+            className={`grid grid-cols-[2fr_1.5fr_1.2fr_1.5fr_1.5fr] ${key === varData.length - 1
                 ? ''
                 : 'border-b border-stroke dark:border-strokedark'
-            }`}
+              }`}
             key={key}
           >
             <div className="flex items-center p-2.5 xl:p-5">

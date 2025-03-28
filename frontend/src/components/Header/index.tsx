@@ -14,7 +14,7 @@ const Header = (props: {
     const token = localStorage.getItem("authToken")
     console.log(token)
     const fetchAllPrices = async () => {
-      const response = await fetch("http://localhost:8080/user/balance", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
+      const response = await fetch("https://phinance-backend.onrender.com/user/balance", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
       const data = await response.json()
       console.log(data)
       setBalance(data)
