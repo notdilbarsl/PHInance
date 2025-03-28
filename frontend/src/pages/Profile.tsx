@@ -65,7 +65,7 @@ const Profile = () => {
   }, []);
 
   if (!user) {
-    return <div>Loading...</div>; // Show a loading state until user data is fetched
+    return <div>Loading...</div>;
   }
 
   return (
