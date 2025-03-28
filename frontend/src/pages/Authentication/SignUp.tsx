@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp: React.FC = () => {
   const [name, setName] = useState('');
@@ -54,7 +56,11 @@ const SignUp: React.FC = () => {
       // Redirect to login page after successful registration
       navigate('/auth/signin');
     } catch (err) {
-      setError(err.message || 'An error occurred during registration');
+      if (err instanceof Error) {
+        setError(err.message || 'An error occurred during registration');
+      } else {
+        setError('An error occurred during registration');
+      }
     }
   };
 
