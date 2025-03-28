@@ -1,10 +1,11 @@
 package models
 
 type TransactionResponse struct {
-	Type     string `json:"type"`
-	Amount   string `json:"amount"`
-	Ticker   string `json:"ticker"`
-	Quantity int    `json:"quantity"`
+	Type     string  `json:"type"`
+	Amount   float32 `json:"amount"`
+	Ticker   string  `json:"ticker"`
+	Quantity int     `json:"quantity"`
+	Date     string  `json:"date"`
 }
 
 type ProfileRespone struct {

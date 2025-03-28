@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sayymeer/feinance-backend/models"
@@ -27,14 +28,19 @@ func ProfileHandler(c *gin.Context) {
 
 	var transactions []models.TransactionResponse
 	err = phiDb.Table("transactions").
-		Select("type, price * quantity AS amount, ticker_id AS ticker, quantity").
+		Select("type, price * quantity AS amount, ticker_id AS ticker, quantity, created_at AS date").
 		Where("user_id = ?", user.ID).
 		Find(&transactions).Error
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "error getting tranactions"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error getting transactions"})
 		return
 	}
 
+	// Format Date to `YYYY-MM-DD HH:MM:SS`
+	for i := range transactions {
+		parsedTime, _ := time.Parse(time.RFC3339, transactions[i].Date)
+		transactions[i].Date = parsedTime.Format("2006-01-02")
+	}
 	var profileRes models.ProfileRespone
 	profileRes.Id = int(user.ID)
 	profileRes.Name = user.Name

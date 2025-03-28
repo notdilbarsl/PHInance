@@ -23,14 +23,15 @@ func InitDB() *gorm.DB {
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASS")
 	dbName := os.Getenv("DB_NAME")
-
+	sslMode := os.Getenv("DB_SSLMODE")
 	loginString := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Kolkata",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=Asia/Kolkata",
 		host,
 		user,
 		password,
 		dbName,
 		port,
+		sslMode,
 	)
 	db, err := gorm.Open(
 		postgres.Open(loginString),
@@ -44,6 +45,7 @@ func InitDB() *gorm.DB {
 	db.AutoMigrate(
 		&models.User{},
 		&models.Transaction{},
+		&models.Watchlist{},
 		&models.Ticker{},
 		&models.PortfolioStock{},
 	)

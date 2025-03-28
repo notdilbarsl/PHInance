@@ -20,16 +20,6 @@ type User struct {
 	Transactions []Transaction `                   gorm:"foreignKey:UserID"`
 }
 
-/*
-Methods:
-
-register
-login
-logout
-edit profile
-getPortfolio
-*/
-
 func (u *User) BeforeSave(tx *gorm.DB) (err error) {
 	hashedPassword, err := utils.HashPassword(u.Password)
 	if err != nil {
