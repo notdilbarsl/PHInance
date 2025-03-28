@@ -1,14 +1,34 @@
-import React, { useState } from "react";
-
+import React, { useState ,useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 const BuyOrder = () => {
-  React.useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
-      window.location.href = "/auth/signin";
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    
+    // Redirect if token is missing
+    if (!token) {
+      navigate('/auth/signin');
+      return;
     }
-  }, []);
 
-
+    try {
+      // Decode token to check expiration
+      const decoded = jwtDecode<{ exp: number }>(token);
+      const isExpired = decoded.exp * 1000 < Date.now();
+      
+      // Redirect if token is expired
+      if (isExpired) {
+        localStorage.removeItem('authToken');
+        navigate('/auth/signin');
+      }
+    } catch (error) {
+      // Handle invalid token
+      localStorage.removeItem('authToken');
+      navigate('/auth/signin');
+    }
+  }, [navigate]); 
   const [shares, setShares] = useState<string>("");
   const [limitPrice, setLimitPrice] = useState<number>(1746.50);
   const [orderType, setOrderType] = useState<"LIMIT" | "MARKET">("LIMIT");
@@ -25,7 +45,7 @@ const BuyOrder = () => {
         {/* Stock Header */}
         <div className="flex items-center justify-between mb-5">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">HDFC Bank Ltd (NSE: HDFCBANK)</h1>
-
+          
           {/* Price + Percentage Change */}
           <div className="flex items-center space-x-2">
             <p className="text-black text-2xl font-semibold">₹1,746.50</p>
@@ -125,15 +145,17 @@ const BuyOrder = () => {
         {/* Order Type Selector (Delivery / Intraday) */}
         <div className="flex space-x-2 mb-4">
           <button
-            className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
+            className={`flex-1 py-2 rounded-md font-semibold ${
+              tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+            }`}
             onClick={() => setTradeType("DELIVERY")}
           >
             DELIVERY
           </button>
           <button
-            className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "INTRADAY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
+            className={`flex-1 py-2 rounded-md font-semibold ${
+              tradeType === "INTRADAY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+            }`}
             onClick={() => setTradeType("INTRADAY")}
           >
             INTRADAY
@@ -171,98 +193,100 @@ const BuyOrder = () => {
             +
           </button>
           <button
-            className={`px-4 py-2 rounded-md font-semibold ${orderType === "LIMIT" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
+            className={`px-4 py-2 rounded-md font-semibold ${
+              orderType === "LIMIT" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+            }`}
             onClick={() => setOrderType("LIMIT")}
           >
             LIMIT
           </button>
           <button
-            className={`px-4 py-2 rounded-md font-semibold ${orderType === "MARKET" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
-              }`}
+            className={`px-4 py-2 rounded-md font-semibold ${
+              orderType === "MARKET" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"
+            }`}
             onClick={() => setOrderType("MARKET")}
           >
             MARKET
           </button>
         </div>
-        {/* Stop Loss Order Section */}
-        <div className="mb-4 p-3 border rounded-md">
-          <div className="flex justify-between items-center">
-            <p className="font-semibold text-gray-700">Stop Loss Order</p>
-            <input
-              type="checkbox"
-              checked={stopLossEnabled}
-              onChange={() => setStopLossEnabled(!stopLossEnabled)}
-              className="w-5 h-5"
-            />
-          </div>
-          {stopLossEnabled && (
+      {/* Stop Loss Order Section */}
+      <div className="mb-4 p-3 border rounded-md">
+        <div className="flex justify-between items-center">
+          <p className="font-semibold text-gray-700">Stop Loss Order</p>
+          <input
+            type="checkbox"
+            checked={stopLossEnabled}
+            onChange={() => setStopLossEnabled(!stopLossEnabled)}
+            className="w-5 h-5"
+          />
+        </div>
+        {stopLossEnabled && (
+          <div className="mt-3">
+            <p className="text-gray-600">Price Range: ₹1,570.25 - ₹1,919.15</p>
+
+            {/* Trigger Price */}
             <div className="mt-3">
-              <p className="text-gray-600">Price Range: ₹1,570.25 - ₹1,919.15</p>
-
-              {/* Trigger Price */}
-              <div className="mt-3">
-                <label className="block text-gray-700 font-medium">Trigger Price</label>
-                <div className="flex items-center space-x-2">
-                  <button
-                    className="p-2 bg-gray-200 rounded-md"
-                    onClick={() => setTriggerPrice((prev) => (prev ? Math.max(prev - 1, 1) : 1))}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    className="w-24 text-center border rounded-md p-2"
-                    value={triggerPrice}
-                    onChange={(e) => setTriggerPrice(e.target.value === "" ? "" : parseFloat(e.target.value))}
-                  />
-                  <button
-                    className="p-2 bg-gray-200 rounded-md"
-                    onClick={() => setTriggerPrice((prev) => (prev ? prev + 1 : 1))}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              {/* Market Price */}
-              <div className="mt-3">
-                <label className="block text-gray-700 font-medium">Market Price</label>
-                <div className="flex items-center space-x-2">
-                  <button
-                    className="p-2 bg-gray-200 rounded-md"
-                    onClick={() => setMarketPrice((prev) => Math.max(prev - 1, 1))}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    className="w-24 text-center border rounded-md p-2"
-                    value={marketPrice}
-                    onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
-                  />
-                  <button
-                    className="p-2 bg-gray-200 rounded-md"
-                    onClick={() => setMarketPrice((prev) => prev + 1)}
-                  >
-                    +
-                  </button>
-                </div>
+              <label className="block text-gray-700 font-medium">Trigger Price</label>
+              <div className="flex items-center space-x-2">
+                <button
+                  className="p-2 bg-gray-200 rounded-md"
+                  onClick={() => setTriggerPrice((prev) => (prev ? Math.max(prev - 1, 1) : 1))}
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  className="w-24 text-center border rounded-md p-2"
+                  value={triggerPrice}
+                  onChange={(e) => setTriggerPrice(e.target.value === "" ? "" : parseFloat(e.target.value))}
+                />
+                <button
+                  className="p-2 bg-gray-200 rounded-md"
+                  onClick={() => setTriggerPrice((prev) => (prev ? prev + 1 : 1))}
+                >
+                  +
+                </button>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Margin & Cash Available */}
-        <div className="flex justify-between text-gray-700 dark:text-white mb-4">
-          <p>Margin Required: <span className="font-semibold">₹5239.5</span></p>
-          <p>Available Cash: <span className="font-semibold">₹8370.25</span></p>
-        </div>
+            {/* Market Price */}
+            <div className="mt-3">
+              <label className="block text-gray-700 font-medium">Market Price</label>
+              <div className="flex items-center space-x-2">
+                <button
+                  className="p-2 bg-gray-200 rounded-md"
+                  onClick={() => setMarketPrice((prev) => Math.max(prev - 1, 1))}
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  className="w-24 text-center border rounded-md p-2"
+                  value={marketPrice}
+                  onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
+                />
+                <button
+                  className="p-2 bg-gray-200 rounded-md"
+                  onClick={() => setMarketPrice((prev) => prev + 1)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
-        {/* Buy Button */}
-        <button className="w-full py-3 bg-green-600 text-white font-semibold rounded-md">
-          PLACE BUY ORDER
-        </button>
+      {/* Margin & Cash Available */}
+      <div className="flex justify-between text-gray-700 dark:text-white mb-4">
+        <p>Margin Required: <span className="font-semibold">₹5239.5</span></p>
+        <p>Available Cash: <span className="font-semibold">₹8370.25</span></p>
+      </div>
+
+      {/* Buy Button */}
+      <button className="w-full py-3 bg-green-600 text-white font-semibold rounded-md">
+        PLACE BUY ORDER
+      </button>
       </div>
     </div>
   );
