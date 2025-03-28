@@ -87,6 +87,7 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
       correctAnswer: 2
     }
   ],
+  // ... (Keep other quiz categories the same)
   'order-types': [
     {
       question: "What is a market order?",
@@ -349,6 +350,7 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
   ]
 };
 
+
 // Define quiz metadata
 const quizMetadata: { [key: string]: QuizMetadata } = {
   'basic-terms': {
@@ -357,8 +359,10 @@ const quizMetadata: { [key: string]: QuizMetadata } = {
     category: 'Stock Market Basics',
     difficulty: 'Beginner',
     maxReward: 100,
-    timeLimit: 15
+    timeLimit: 15,
   },
+  // ... (Keep other quiz metadata the same)
+
   'order-types': {
     title: 'Order Types Quiz',
     description: 'Test your understanding of different order types',
@@ -401,9 +405,10 @@ const quizMetadata: { [key: string]: QuizMetadata } = {
   }
 };
 
-// Get difficulty class
+
+// Helper to style difficulty badges
 const getDifficultyClass = (difficulty: string): string => {
-  switch(difficulty) {
+  switch (difficulty) {
     case 'Beginner':
       return 'bg-success/10 text-success';
     case 'Intermediate':
@@ -418,16 +423,24 @@ const getDifficultyClass = (difficulty: string): string => {
 const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
-  
+
+  // Current question index
   const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  // Each index: which option user selected
   const [selectedOptions, setSelectedOptions] = useState<number[]>(Array(5).fill(null));
+
+  // Show immediate feedback: either "Correct!" or "Incorrect + correct answer"
+  const [feedback, setFeedback] = useState<(string | null)[]>(Array(5).fill(null));
+
+  // Additional states
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizComplete, setQuizComplete] = useState(false);
   const [score, setScore] = useState(0);
   const [earnedCoins, setEarnedCoins] = useState(0);
   const [previousResults, setPreviousResults] = useState<QuizResult | null>(null);
-  
-  // Safely access metadata with nullish check
+
+  // Safely fetch metadata
   const metadata = quizId && quizMetadata[quizId] ? quizMetadata[quizId] : {
     title: 'Quiz',
     description: 'Test your knowledge',
@@ -436,11 +449,11 @@ const QuizPage = () => {
     maxReward: 100,
     timeLimit: 15
   };
-  
-  // Safely access questions with nullish check
+
+  // Safely fetch questions
   const questions = quizId && quizQuestions[quizId] ? quizQuestions[quizId] : [];
-  
-  // Check if the quiz has been completed before
+
+  // Load any previous quiz results from localStorage
   useEffect(() => {
     if (quizId) {
       try {
@@ -450,8 +463,8 @@ const QuizPage = () => {
           if (completedItems.quizScores && completedItems.quizScores[quizId]) {
             const quizResults = completedItems.quizScores[quizId];
             setPreviousResults(quizResults);
-            
-            // If quiz was completed before, we can show the previous score
+
+            // If quiz was completed before, display that score
             if (completedItems.quizzes.includes(quizId)) {
               setScore(quizResults.score);
               setEarnedCoins(quizResults.earnedCoins);
@@ -464,14 +477,13 @@ const QuizPage = () => {
       }
     }
   }, [quizId]);
-  
-  // Initialize timer
+
+  // Timer
   useEffect(() => {
     let timer: NodeJS.Timeout | undefined;
-    
     if (metadata && !quizComplete) {
       setTimeRemaining(metadata.timeLimit * 60);
-      
+
       timer = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
@@ -483,125 +495,140 @@ const QuizPage = () => {
         });
       }, 1000);
     }
-    
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [metadata, quizComplete, quizId]);
-  
-  // Format time
+  }, [metadata, quizComplete]);
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-  
-  // Handle option selection
+
+  // Immediate feedback when selecting an option
   const handleOptionSelect = (questionIndex: number, optionIndex: number): void => {
-    const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[questionIndex] = optionIndex;
-    setSelectedOptions(newSelectedOptions);
+    // Mark the user's selection
+    const updatedOptions = [...selectedOptions];
+    updatedOptions[questionIndex] = optionIndex;
+    setSelectedOptions(updatedOptions);
+
+    // Provide feedback
+    const correctIndex = questions[questionIndex].correctAnswer;
+    const isCorrect = optionIndex === correctIndex;
+    const correctAnswerText = questions[questionIndex].options[correctIndex];
+
+    const updatedFeedback = [...feedback];
+    updatedFeedback[questionIndex] = isCorrect
+      ? '✅ Correct!'
+      : `❌ Incorrect!`;
+    setFeedback(updatedFeedback);
   };
-  
-  // Handle navigation between questions
+
+  // Move to the next question
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     }
   };
-  
+
+  // Move to the previous question
   const handlePrev = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
     }
   };
-  
-  // Calculate score and submit results
+
+  // Calculate final score
   const calculateAndSubmitResults = useCallback(() => {
-    let correctAnswers = 0;
-    
+    let correctCount = 0;
     for (let i = 0; i < questions.length; i++) {
       if (selectedOptions[i] === questions[i].correctAnswer) {
-        correctAnswers++;
+        correctCount++;
       }
     }
-    
-    const calculatedScore = Math.round((correctAnswers / questions.length) * 100);
-    const calculatedCoins = Math.round((calculatedScore / 100) * metadata.maxReward);
-    
+    const calculatedScore = Math.round((correctCount / questions.length) * 100);
+    const calculatedCoins = Math.round((calculatedScore / 100) * (metadata.maxReward || 100));
+
     setScore(calculatedScore);
     setEarnedCoins(calculatedCoins);
     setQuizComplete(true);
-    
-    // Update local storage to save progress, coins, and quiz score
+
+    // Save to localStorage
     try {
       const savedData = localStorage.getItem('completedLearningItems');
-      const completedItems = savedData ? JSON.parse(savedData) as CompletedItems : { videos: [], quizzes: [], coins: 0, quizScores: {} };
-      
-      // Initialize quizScores if it doesn't exist
+      const completedItems: CompletedItems = savedData
+        ? JSON.parse(savedData)
+        : { videos: [], quizzes: [], coins: 0, quizScores: {} };
+
       if (!completedItems.quizScores) {
         completedItems.quizScores = {};
       }
-      
-      // Save the score and earned coins for this quiz
+
       if (quizId) {
         completedItems.quizScores[quizId] = {
           score: calculatedScore,
           earnedCoins: calculatedCoins,
-          completedAt: new Date().toISOString()
+          completedAt: new Date().toISOString(),
         };
-        
         if (!completedItems.quizzes.includes(quizId)) {
           completedItems.quizzes.push(quizId);
           completedItems.coins = (completedItems.coins || 0) + calculatedCoins;
         }
       }
-      
+
       localStorage.setItem('completedLearningItems', JSON.stringify(completedItems));
       localStorage.setItem('learningCoins', completedItems.coins.toString());
     } catch (error) {
       console.error('Failed to save quiz results:', error);
     }
-  }, [selectedOptions, questions, quizId, metadata.maxReward]);
-  
-  // Handle final submission
+  }, [questions, selectedOptions, quizId, metadata.maxReward]);
+
+  // Called when user clicks "Submit Quiz" or if time expires
   const handleSubmit = () => {
     if (!quizComplete) {
       calculateAndSubmitResults();
     } else {
-      navigate('/learning-centre');
+      navigate('/learning');
     }
   };
-  
+
   return (
     <>
       <Breadcrumb pageName={metadata.title} />
-      
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         {/* Quiz Header */}
         <div className="border-b border-stroke px-6 py-4 dark:border-strokedark">
           <div className="flex flex-wrap items-center justify-between">
             <div>
-              <h3 className="text-xl font-semibold text-black dark:text-white">
-                {metadata.title}
-              </h3>
+              <h3 className="text-xl font-semibold text-black dark:text-white">{metadata.title}</h3>
               <p className="text-sm text-body">{metadata.description}</p>
             </div>
-            
+
             <div className="flex items-center space-x-3">
-              <span className={`rounded-full ${getDifficultyClass(metadata.difficulty)} px-3 py-1 text-sm font-medium`}>
+              {/* Difficulty Badge */}
+              <span
+                className={`rounded-full ${getDifficultyClass(metadata.difficulty)} px-3 py-1 text-sm font-medium`}
+              >
                 {metadata.difficulty}
               </span>
-              
+
+              {/* Timer */}
               {!quizComplete && (
                 <div className="flex items-center rounded-md bg-meta-2 px-4 py-2 dark:bg-meta-4">
                   <svg className="mr-2 h-5 w-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span className="text-sm font-medium text-black dark:text-white">{formatTime(timeRemaining)}</span>
                 </div>
               )}
-              
+
+              {/* Current Question X of Y */}
               {!quizComplete && (
                 <div className="text-sm text-body">
                   Question {currentQuestion + 1} of {questions.length}
@@ -610,34 +637,48 @@ const QuizPage = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Quiz Content */}
         <div className="p-6">
+          {/* If quiz was previously completed, show previous results */}
           {previousResults && quizComplete ? (
             <div className="flex flex-col items-center justify-center py-8">
               <div className="mb-8 text-center">
-                <div className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
-                  score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
-                }`}>
-                  <span className={`text-3xl font-bold ${
-                    score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
-                  }`}>
+                {/* Score Circle */}
+                <div
+                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
+                    score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
+                  }`}
+                >
+                  <span
+                    className={`text-3xl font-bold ${
+                      score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
+                    }`}
+                  >
                     {score}%
                   </span>
                 </div>
+
                 <h3 className="mb-1 text-2xl font-bold text-black dark:text-white">
-                  {score >= 80 ? 'Previous Score: Excellent!' : score >= 50 ? 'Previous Score: Good Effort!' : 'Previous Score: Keep Learning!'}
+                  {score >= 80
+                    ? 'Previous Score: Excellent!'
+                    : score >= 50
+                    ? 'Previous Score: Good Effort!'
+                    : 'Previous Score: Keep Learning!'}
                 </h3>
+
                 <p className="text-body">
                   You earned <span className="font-bold text-primary">{earnedCoins} coins</span> from this quiz!
                 </p>
+
                 {previousResults.completedAt && (
                   <p className="mt-2 text-sm text-body">
                     Completed on: {new Date(previousResults.completedAt).toLocaleDateString()}
                   </p>
                 )}
               </div>
-              
+
+              {/* Summary */}
               <div className="mb-8 w-full max-w-md rounded-md border border-stroke bg-white p-4 dark:border-strokedark dark:bg-boxdark">
                 <h4 className="mb-3 text-lg font-semibold text-black dark:text-white">Quiz Summary</h4>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
@@ -646,7 +687,9 @@ const QuizPage = () => {
                 </div>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
                   <span className="text-body">Correct Answers</span>
-                  <span className="font-medium text-black dark:text-white">{Math.round(score * questions.length / 100)}</span>
+                  <span className="font-medium text-black dark:text-white">
+                    {Math.round((score / 100) * questions.length)}
+                  </span>
                 </div>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
                   <span className="text-body">Score Percentage</span>
@@ -662,12 +705,15 @@ const QuizPage = () => {
                   </span>
                 </div>
               </div>
-              
+
               <div className="flex space-x-4">
+                {/* Retake Quiz */}
                 <button
                   onClick={() => {
+                    // Reset states
                     setQuizComplete(false);
-                    setSelectedOptions([]);
+                    setSelectedOptions(Array(5).fill(null));
+                    setFeedback(Array(5).fill(null));
                     setCurrentQuestion(0);
                     setTimeRemaining(metadata.timeLimit * 60);
                   }}
@@ -675,8 +721,10 @@ const QuizPage = () => {
                 >
                   Retake Quiz
                 </button>
+
+                {/* Return to Learning Centre */}
                 <button
-                  onClick={() => navigate('/learning-centre')}
+                  onClick={() => navigate('/learning')}
                   className="rounded-md bg-meta-3 py-3 px-6 text-center font-medium text-white hover:bg-opacity-90"
                 >
                   Return to Learning Centre
@@ -684,44 +732,61 @@ const QuizPage = () => {
               </div>
             </div>
           ) : !quizComplete ? (
+            //  -------------------------------
+            //  MAIN QUIZ SECTION
+            //  -------------------------------
             <div>
-              {/* Question */}
+              {/* Question & Options */}
               <div className="mb-8">
                 <h4 className="mb-4 text-lg font-medium text-black dark:text-white">
                   {currentQuestion + 1}. {questions[currentQuestion]?.question}
                 </h4>
-                
-                {/* Options */}
+
                 <div className="space-y-3">
-                  {questions[currentQuestion]?.options.map((option: string, index: number) => (
-                    <div 
-                      key={index}
-                      className={`flex cursor-pointer items-center rounded-md border ${
-                        selectedOptions[currentQuestion] === index
-                          ? 'border-primary bg-primary/5'
-                          : 'border-stroke dark:border-strokedark'
-                      } p-4 transition hover:border-primary hover:bg-primary/5`}
-                      onClick={() => handleOptionSelect(currentQuestion, index)}
-                    >
-                      <div className={`mr-4 flex h-6 w-6 items-center justify-center rounded-full ${
-                        selectedOptions[currentQuestion] === index
-                          ? 'border-2 border-primary bg-primary text-white'
-                          : 'border border-stroke dark:border-strokedark'
-                      }`}>
-                        {selectedOptions[currentQuestion] === index && (
-                          <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 16 16">
-                            <circle cx="8" cy="8" r="4" />
-                          </svg>
-                        )}
+                  {questions[currentQuestion]?.options.map((option: string, index: number) => {
+                    // Highlight if user selected this option
+                    const isSelected = selectedOptions[currentQuestion] === index;
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => handleOptionSelect(currentQuestion, index)}
+                        className={`flex cursor-pointer items-center rounded-md border p-4 transition ${
+                          isSelected
+                            ? 'border-primary bg-primary/5'
+                            : 'border-stroke dark:border-strokedark hover:border-primary hover:bg-primary/5'
+                        }`}
+                      >
+                        {/* Radio bullet */}
+                        <div
+                          className={`mr-4 flex h-6 w-6 items-center justify-center rounded-full ${
+                            isSelected
+                              ? 'border-2 border-primary bg-primary text-white'
+                              : 'border border-stroke dark:border-strokedark'
+                          }`}
+                        >
+                          {isSelected && (
+                            <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 16 16">
+                              <circle cx="8" cy="8" r="4" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-black dark:text-white">{option}</span>
                       </div>
-                      <span className="text-black dark:text-white">{option}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
+
+                {/* Immediate Feedback for current question */}
+                {feedback[currentQuestion] && (
+                  <div className="mt-4 text-sm font-semibold">
+                    {feedback[currentQuestion]}
+                  </div>
+                )}
               </div>
-              
+
               {/* Navigation Buttons */}
               <div className="flex justify-between">
+                {/* Previous */}
                 <button
                   onClick={handlePrev}
                   disabled={currentQuestion === 0}
@@ -736,7 +801,8 @@ const QuizPage = () => {
                   </svg>
                   Previous
                 </button>
-                
+
+                {/* Next or Submit */}
                 {currentQuestion < questions.length - 1 ? (
                   <button
                     onClick={handleNext}
@@ -761,25 +827,39 @@ const QuizPage = () => {
               </div>
             </div>
           ) : (
+            //  -------------------------------
+            //  QUIZ RESULTS AFTER SUBMISSION
+            //  -------------------------------
             <div className="flex flex-col items-center justify-center py-8">
+              {/* Score Circle */}
               <div className="mb-8 text-center">
-                <div className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
-                  score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
-                }`}>
-                  <span className={`text-3xl font-bold ${
-                    score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
-                  }`}>
+                <div
+                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
+                    score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
+                  }`}
+                >
+                  <span
+                    className={`text-3xl font-bold ${
+                      score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
+                    }`}
+                  >
                     {score}%
                   </span>
                 </div>
                 <h3 className="mb-1 text-2xl font-bold text-black dark:text-white">
-                  {score >= 80 ? 'Excellent Work!' : score >= 50 ? 'Good Effort!' : 'Keep Learning!'}
+                  {score >= 80
+                    ? 'Excellent Work!'
+                    : score >= 50
+                    ? 'Good Effort!'
+                    : 'Keep Learning!'}
                 </h3>
                 <p className="text-body">
-                  You've earned <span className="font-bold text-primary">{earnedCoins} coins</span> for completing this quiz!
+                  You've earned <span className="font-bold text-primary">{earnedCoins} coins</span> for completing this
+                  quiz!
                 </p>
               </div>
-              
+
+              {/* Summary */}
               <div className="mb-8 w-full max-w-md rounded-md border border-stroke bg-white p-4 dark:border-strokedark dark:bg-boxdark">
                 <h4 className="mb-3 text-lg font-semibold text-black dark:text-white">Quiz Summary</h4>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
@@ -788,7 +868,9 @@ const QuizPage = () => {
                 </div>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
                   <span className="text-body">Correct Answers</span>
-                  <span className="font-medium text-black dark:text-white">{Math.round(score * questions.length / 100)}</span>
+                  <span className="font-medium text-black dark:text-white">
+                    {Math.round((score / 100) * questions.length)}
+                  </span>
                 </div>
                 <div className="mb-2 flex justify-between border-b border-stroke pb-2 dark:border-strokedark">
                   <span className="text-body">Score Percentage</span>
@@ -804,9 +886,10 @@ const QuizPage = () => {
                   </span>
                 </div>
               </div>
-              
+
+              {/* Return to Learning Centre */}
               <button
-                onClick={handleSubmit}
+                onClick={() => navigate('/learning')}
                 className="rounded-md bg-primary py-3 px-10 text-center font-medium text-white hover:bg-opacity-90"
               >
                 Return to Learning Centre
@@ -819,4 +902,4 @@ const QuizPage = () => {
   );
 };
 
-export default QuizPage; 
+export default QuizPage;
