@@ -1,81 +1,112 @@
 import { BRAND } from '../../types/brand';
-import BrandOne from '../../images/brand/brand-01.svg';
-import BrandTwo from '../../images/brand/brand-02.svg';
-import BrandThree from '../../images/brand/brand-03.svg';
-import BrandFour from '../../images/brand/brand-04.svg';
-import BrandFive from '../../images/brand/brand-05.svg';
-import BrandSix from '../../images/brand/brand-06.svg';
-import BrandSeven from '../../images/brand/brand-07.svg';
-import BrandEight from '../../images/brand/brand-08.svg';
-
+import React, { useState, useEffect } from 'react';
+interface StockData {
+  name: string;
+  ticker: string;
+  price: number | 0; // 0 for loading state
+}
 const brandData: BRAND[] = [
-  {
-    logo: BrandOne,
-    name: 'Reliance',
-    trend: 'Bullish',
-    revenues: '5,768',
-    sales: 590,
-    conversion: 4.8,
-  },
-  {
-    logo: BrandTwo,
-    name: 'TCS',
-    trend: 'Bearish',
-    revenues: '4,635',
-    sales: 467,
-    conversion: 4.3,
-  },
-  {
-    logo: BrandThree,
-    name: 'HDFCBANK',
-    trend: 'Bullish',
-    revenues: '4,290',
-    sales: 420,
-    conversion: 3.7,
-  },
-  {
-    logo: BrandFour,
-    name: 'SBIN',
-    trend: 'Bullish',
-    revenues: '3,580',
-    sales: 389,
-    conversion: 2.5,
-  },
-  {
-    logo: BrandFive,
-    name: 'KOTAKBANK',
-    trend: 'Bearish',
-    revenues: '6,768',
-    sales: 390,
-    conversion: 4.2,
-  },
-  {
-    logo: BrandSix,
-    name: 'TATA',
-    trend: 'Bullish',
-    revenues: '2,564',
-    sales: 390,
-    conversion: 4.2,
-  },
-  {
-    logo: BrandSeven,
-    name: 'HCLTECH',
-    trend: 'Bearish',
-    revenues: '5,982',
-    sales: 390,
-    conversion: 4.2,
-  },
-  {
-    logo: BrandEight,
-    name: 'Wipro',
-    trend: 'Bullish',
-    revenues: '2,452',
-    sales: 390,
-    conversion: 4.2,
-  },
-];
+  { name: "Reliance Industries Limited", ticker: "RELIANCE", price: 0 },
+  { name: "HDFC Bank Limited", ticker: "HDFCBANK", price: 0 },
+  { name: "Tata Consultancy Services Limited", ticker: "TCS", price: 0 },
+  { name: "Bharti Airtel Limited", ticker: "BHARTIARTL", price: 0 },
+  { name: "ICICI Bank Limited", ticker: "ICICIBANK", price: 0 },
+  { name: "State Bank of India", ticker: "SBIN", price: 0 },
+  { name: "Infosys Limited", ticker: "INFY", price: 0 },
+  { name: "Bajaj Finance Limited", ticker: "BAJFINANCE", price: 0 },
+  { name: "Hindustan Unilever Limited", ticker: "HINDUNILVR", price: 0 },
+  { name: "ITC Limited", ticker: "ITC", price: 0 },
+  { name: "Kotak Mahindra Bank Limited", ticker: "KOTAKBANK", price: 0 },
+  { name: "Larsen & Toubro Limited", ticker: "LT", price: 0 },
+  { name: "HCL Technologies Limited", ticker: "HCLTECH", price: 0 },
+  { name: "Maruti Suzuki India Limited", ticker: "MARUTI", price: 0 },
+  { name: "Sun Pharmaceutical Industries Ltd.", ticker: "SUNPHARMA", price: 0 },
+  { name: "Asian Paints Limited", ticker: "ASIANPAINT", price: 0 },
+  { name: "Axis Bank Limited", ticker: "AXISBANK", price: 0 },
+  { name: "Titan Company Limited", ticker: "TITAN", price: 0 },
+  { name: "UltraTech Cement Limited", ticker: "ULTRACEMCO", price: 0 },
+  { name: "Wipro Limited", ticker: "WIPRO", price: 0 },
+  { name: "Nestlé India Limited", ticker: "NESTLEIND", price: 0 },
+  { name: "Mahindra & Mahindra Limited", ticker: "M&M", price: 0 },
+  { name: "Tata Motors Limited", ticker: "TATAMOTORS", price: 0 },
+  { name: "HDFC Life Insurance Company Limited", ticker: "HDFCLIFE", price: 0 },
+  { name: "Dr. Reddy's Laboratories Limited", ticker: "DRREDDY", price: 0 },
+  { name: "Adani Green Energy Limited", ticker: "ADANIGREEN", price: 0 },
+  { name: "Power Grid Corporation of India Ltd.", ticker: "POWERGRID", price: 0 },
+  { name: "NTPC Limited", ticker: "NTPC", price: 0 },
+  { name: "JSW Steel Limited", ticker: "JSWSTEEL", price: 0 },
+  { name: "Tech Mahindra Limited", ticker: "TECHM", price: 0 },
+  { name: "Adani Ports and Special Economic Zone", ticker: "ADANIPORTS", price: 0 },
+  { name: "Bajaj Finserv Limited", ticker: "BAJAJFINSV", price: 0 },
+  { name: "IndusInd Bank Limited", ticker: "INDUSINDBK", price: 0 },
+  { name: "Hindalco Industries Limited", ticker: "HINDALCO", price: 0 },
+  { name: "Grasim Industries Limited", ticker: "GRASIM", price: 0 },
+  { name: "Cipla Limited", ticker: "CIPLA", price: 0 },
+  { name: "Tata Steel Limited", ticker: "TATASTEEL", price: 0 },
+  { name: "SBI Life Insurance Company Limited", ticker: "SBILIFE", price: 0 },
+  { name: "Eicher Motors Limited", ticker: "EICHERMOT", price: 0 },
+  { name: "Divi's Laboratories Limited", ticker: "DIVISLAB", price: 0 },
+  { name: "Coal India Limited", ticker: "COALINDIA", price: 0 },
+  { name: "Britannia Industries Limited", ticker: "BRITANNIA", price: 0 },
+  { name: "Hero MotoCorp Limited", ticker: "HEROMOTOCO", price: 0 },
+  { name: "Apollo Hospitals Enterprise Limited", ticker: "APOLLOHOSP", price: 0 },
+  { name: "Oil & Natural Gas Corporation Ltd.", ticker: "ONGC", price: 0 },
+  { name: "Adani Enterprises Limited", ticker: "ADANIENT", price: 0 },
+  { name: "HDFC Asset Management Company Ltd.", ticker: "HDFCAMC", price: 0 },
+  { name: "Dabur India Limited", ticker: "DABUR", price: 0 },
+  { name: "Pidilite Industries Limited", ticker: "PIDILITIND", price: 0 },
+  { name: "Shree Cement Limited", ticker: "SHREECEM", price: 0 }
+];  
 
-const TableOne = () => {
+
+// Utility function to fetch prices
+const fetchStockPrice = async (ticker: string): Promise<number> => {
+  try {
+    const response = await fetch(`/api/stocks/${ticker}/price`);
+    if (!response.ok) throw new Error('Price fetch failed');
+    const data = await response.json();
+    return data.price;
+  } catch (error) {
+    console.error(`Error fetching price for ${ticker}:`, error);
+    return 0; // Return 0 as fallback value
+  }
+};
+
+// React component example
+const StockTable = () => {
+  const [stocks, setStocks] = useState<StockData[]>(brandData);
+
+  useEffect(() => {
+    const fetchAllPrices = async () => {
+      const updatedStocks = await Promise.all(
+        stocks.map(async (stock) => ({
+          ...stock,
+          price: await fetchStockPrice(stock.ticker)
+        }))
+      );
+      setStocks(updatedStocks);
+    };
+
+    fetchAllPrices();
+  }, []);
+
+  const addToWatchlist = async (ticker: string) => {
+    try {
+      const response = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ticker }),
+      });
+      if (!response.ok) throw new Error('Failed to add to watchlist');
+      // Handle success (e.g., show a notification)
+    } catch (error) {
+      console.error('Error adding to watchlist:', error);
+      // Handle error (e.g., show an error message)
+    }
+  };
+
   return (
     <div className="w-150 rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
@@ -83,64 +114,73 @@ const TableOne = () => {
       </h4>
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-3">
+        <div className="grid grid-cols-4 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
           <div className="p-2.5 xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
               Company
             </h5>
           </div>
-         
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Price
+              Ticker
             </h5>
           </div>
-
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
-              Trend
+              Market Price
             </h5>
           </div>
-          
+          <div className="p-2.5 text-center xl:p-5">
+          <h5 className="text-sm font-medium uppercase xsm:text-base">
+              Add to Watchlist
+            </h5>
+          </div>
         </div>
 
-        {brandData.map((brand, key) => (
+        {stocks.map((stock, key) => (
           <div
-            className={`grid grid-cols-3  sm:grid-cols-2git ${
-              key === brandData.length - 1
+            className={`grid grid-cols-4 sm:grid-cols-4 ${
+              key === stocks.length - 1
                 ? ''
                 : 'border-b border-stroke dark:border-strokedark'
             }`}
             key={key}
           >
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
-              <div className="flex-shrink-0">
-                <img src={brand.logo} style={{width:"50px"}} alt="Brand" />
-              </div>
               <p className="hidden text-black dark:text-white sm:block">
-                {brand.name}
+                {stock.name}
               </p>
             </div>
-
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className="text-meta-3">₹{brand.revenues}</p>
+              <p className="hidden text-black dark:text-white sm:block">{stock.ticker}</p>
             </div>
-
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <p className={`
-              ${
-                brand.trend === 'Bullish'
-                  ? 'text-green-500'
-                  : brand.trend === 'Bearish'
-                    ? 'text-red-500'
-                    : 'text-gray-500' // Optional: Default color if trend is neither
-              }
-            `}
+              <p className="text-meta-3">₹{stock.price}</p>
+            </div>
+            <div className="flex items-center justify-center p-2.5 xl:p-5">
+            <button
+            onClick={() => addToWatchlist(stock.ticker)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center"
+            // disabled={addedStocks.has(stock.ticker)}
+          >
+{/*           {addedStocks.has(stock.ticker) ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-4 h-4"
               >
-                {brand.trend}</p>
+                <path d="M20 6L9 17 4 12" />
+              </svg>
+            ) : (
+              '+'
+            )}*/}
+          </button>
             </div>
-
-           
           </div>
         ))}
       </div>
@@ -148,4 +188,4 @@ const TableOne = () => {
   );
 };
 
-export default TableOne;
+export default StockTable;

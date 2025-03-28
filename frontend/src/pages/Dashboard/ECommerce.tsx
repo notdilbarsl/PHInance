@@ -99,10 +99,7 @@ const ECommerce: React.FC = () => {
       </div> */}
 
       <div className="">
-        {/* <ChartOne />
-        <ChartTwo />
-        <ChartThree /> */}
-        {/* <MapOne /> */}
+
         <div className="flex gap-20 ml-20 col-span-12 xl:col-span-6">
           <TableOne /><TableTwo/>
         </div>
