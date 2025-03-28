@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -42,13 +44,17 @@ const SignIn: React.FC = () => {
         navigate('/'); // Redirect to dashboard
       }
     } catch (err) {
-      setError(err.message || 'An error occurred during login');
+      if (err instanceof Error) {
+        setError(err.message || 'An error occurred during login');
+      } else {
+        setError('An unknown error occurred during login');
+      }
     }
   };
 
   return (
     <>
-      <Breadcrumb pageName="Sign In" />
+        <Breadcrumb pageName="Sign In" />
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
@@ -57,7 +63,6 @@ const SignIn: React.FC = () => {
                 <img className="hidden dark:block" src={Logo} alt="Logo" />
                 <img className="dark:hidden" src={LogoDark} alt="Logo" />
               </Link>
-
               <p className="2xl:px-20">
                 Get credits worth <strong>Rs. 25000</strong>
               </p>
@@ -72,19 +77,18 @@ const SignIn: React.FC = () => {
               </h2>
 
               <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Email
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              />
-
+                <div className="mb-4">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                     <span className="absolute right-4 top-4">
                       <svg
                         className="fill-current"
@@ -101,24 +105,22 @@ const SignIn: React.FC = () => {
                           />
                         </g>
                       </svg>
-                    </span>
+                      </span>
                   </div>
                 </div>
 
-                </div>
-
-          <div className="mb-6">
-            <label className="mb-2.5 block font-medium text-black dark:text-white">
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              />
+                <div className="mb-6">
+                  <label className="mb-2.5 block font-medium text-black dark:text-white">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                     <span className="absolute right-4 top-4">
                       <svg
                         className="fill-current"
@@ -204,6 +206,7 @@ const SignIn: React.FC = () => {
                     </Link>
                   </p>
                 </div>
+                
               </form>
             </div>
           </div>
