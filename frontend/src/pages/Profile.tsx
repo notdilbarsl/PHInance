@@ -34,7 +34,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDMzMDM2ODAsInVzZXJfaWQiOjF9.O-wEfHBhLlOIWlVQ2xvdzqLF1gh7Op3-hChcJ3bVCLQ"; // Assuming token is stored here
+        const token = localStorage.getItem("authToken") // Assuming token is stored here
         const response = await fetch('http://localhost:8080/user/profile', {
           method: 'GET',
           headers: {

@@ -13,7 +13,7 @@ import (
 // Loading .env file here because this init function will be executed first
 func init() {
 	if err := godotenv.Load(); err != nil {
-		panic(err)
+		fmt.Print(err)
 	}
 }
 

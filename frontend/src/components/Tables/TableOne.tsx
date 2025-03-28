@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 interface StockData {
   name: string;
   ticker: string;
-  price: number | 0; // 0 for loading state
+  curr_price: number | 0; // 0 for loading state
 }
 const brandData: BRAND[] = [
   { name: "Reliance Industries Limited", ticker: "RELIANCE", price: 0 },
@@ -56,35 +56,20 @@ const brandData: BRAND[] = [
   { name: "Dabur India Limited", ticker: "DABUR", price: 0 },
   { name: "Pidilite Industries Limited", ticker: "PIDILITIND", price: 0 },
   { name: "Shree Cement Limited", ticker: "SHREECEM", price: 0 }
-];  
+];
 
 
-// Utility function to fetch prices
-const fetchStockPrice = async (ticker: string): Promise<number> => {
-  try {
-    const response = await fetch(`/api/stocks/${ticker}/price`);
-    if (!response.ok) throw new Error('Price fetch failed');
-    const data = await response.json();
-    return data.price;
-  } catch (error) {
-    console.error(`Error fetching price for ${ticker}:`, error);
-    return 0; // Return 0 as fallback value
-  }
-};
-
-// React component example
 const StockTable = () => {
   const [stocks, setStocks] = useState<StockData[]>(brandData);
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken")
+    console.log(token)
     const fetchAllPrices = async () => {
-      const updatedStocks = await Promise.all(
-        stocks.map(async (stock) => ({
-          ...stock,
-          price: await fetchStockPrice(stock.ticker)
-        }))
-      );
-      setStocks(updatedStocks);
+      const response = await fetch("http://localhost:8080/user/dashboard", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
+      const data = await response.json()
+      console.log(data)
+      setStocks(data)
     };
 
     fetchAllPrices();
@@ -131,7 +116,7 @@ const StockTable = () => {
             </h5>
           </div>
           <div className="p-2.5 text-center xl:p-5">
-          <h5 className="text-sm font-medium uppercase xsm:text-base">
+            <h5 className="text-sm font-medium uppercase xsm:text-base">
               Add to Watchlist
             </h5>
           </div>
@@ -139,11 +124,10 @@ const StockTable = () => {
 
         {stocks.map((stock, key) => (
           <div
-            className={`grid grid-cols-4 sm:grid-cols-4 ${
-              key === stocks.length - 1
-                ? ''
-                : 'border-b border-stroke dark:border-strokedark'
-            }`}
+            className={`grid grid-cols-4 sm:grid-cols-4 ${key === stocks.length - 1
+              ? ''
+              : 'border-b border-stroke dark:border-strokedark'
+              }`}
             key={key}
           >
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
@@ -158,12 +142,12 @@ const StockTable = () => {
               <p className="text-meta-3">₹{stock.price}</p>
             </div>
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-            <button
-            onClick={() => addToWatchlist(stock.ticker)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center"
-            // disabled={addedStocks.has(stock.ticker)}
-          >
-{/*           {addedStocks.has(stock.ticker) ? (
+              <button
+                onClick={() => addToWatchlist(stock.ticker)}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-8 h-8 rounded-full flex items-center justify-center"
+              // disabled={addedStocks.has(stock.ticker)}
+              >
+                {/*           {addedStocks.has(stock.ticker) ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -179,7 +163,7 @@ const StockTable = () => {
             ) : (
               '+'
             )}*/}
-          </button>
+              </button>
             </div>
           </div>
         ))}

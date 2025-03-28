@@ -2,18 +2,33 @@ import { Link } from 'react-router-dom';
 import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
+import { useEffect, useState } from 'react';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
-  phiBalance?: number; // Optional: pass in actual balance
 }) => {
-  const phiAmount = props.phiBalance ?? 1245.67; // Fallback/test balance
+  const [balance, setBalance] = useState(0)
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken")
+    console.log(token)
+    const fetchAllPrices = async () => {
+      const response = await fetch("http://localhost:8080/user/balance", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
+      const data = await response.json()
+      console.log(data)
+      setBalance(data)
+    };
+
+    fetchAllPrices();
+  }, []);
+
+
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
-        
+
         {/* Left Side */}
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="lg:hidden flex items-center gap-2 sm:gap-4">
@@ -50,7 +65,7 @@ const Header = (props: {
         {/* Center - Φ Balance Display */}
         <div className="hidden lg:flex items-center justify-center">
           <span className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold text-sm shadow hover:shadow-md transition duration-200 ease-in-out">
-            Φ {phiAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            Φ {balance}
           </span>
         </div>
 
