@@ -39,7 +39,7 @@ const SignIn: React.FC = () => {
 
       if (data.token) {
         localStorage.setItem('authToken', data.token);
-        navigate('/dashboard'); // Redirect to dashboard
+        navigate('/'); // Redirect to dashboard
       }
     } catch (err) {
       setError(err.message || 'An error occurred during login');
