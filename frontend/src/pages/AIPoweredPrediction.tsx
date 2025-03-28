@@ -1,41 +1,49 @@
 import React, { useState, useEffect } from "react";
 
 const AIPoweredPrediction = () => {
-    const userStocks = [
-      { name: "AAPL" }, // Apple Inc.
-      { name: "GOOGL" }, // Alphabet Inc. (Google)
-      { name: "MSFT" }, // Microsoft Corporation
-      { name: "AMZN" }, // Amazon.com, Inc.
-      { name: "TSLA" }, // Tesla, Inc.
-  
-      // National Stock Exchange (NSE) Listed Stocks
-      { name: "RELIANCE" }, // Reliance Industries Limited
-      { name: "TCS" }, // Tata Consultancy Services
-      { name: "INFY" }, // Infosys Limited
-      { name: "HDFCBANK" }, // HDFC Bank Limited
-      { name: "ICICIBANK" }, // ICICI Bank Limited
-      { name: "SBIN" }, // State Bank of India
-      { name: "BHARTIARTL" }, // Bharti Airtel Limited
-      { name: "ITC" }, // ITC Limited
-      { name: "LT" }, // Larsen & Toubro Limited
-      { name: "WIPRO" }, // Wipro Limited
-      { name: "HINDUNILVR" }, // Hindustan Unilever Limited
-      { name: "MARUTI" }, // Maruti Suzuki India Limited
-      { name: "BAJAJFINSV" }, // Bajaj Finserv Limited
-      { name: "BAJFINANCE" }, // Bajaj Finance Limited
-      { name: "KOTAKBANK" }, // Kotak Mahindra Bank Limited
-      { name: "ONGC" }, // Oil and Natural Gas Corporation Limited
-      { name: "COALINDIA" }, // Coal India Limited
-      { name: "HCLTECH" }, // HCL Technologies Limited
-      { name: "TECHM" }, // Tech Mahindra Limited
-      { name: "ADANIENT" }, // Adani Enterprises Limited
-      { name: "ULTRACEMCO" }, // UltraTech Cement Limited
-      { name: "SUNPHARMA" }, // Sun Pharmaceutical Industries Limited
-      { name: "TITAN" }, // Titan Company Limited
-      { name: "DRREDDY" }, // Dr. Reddy’s Laboratories Limited
-      { name: "AXISBANK" }, // Axis Bank Limited
-    ];
-  
+  React.useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "/auth/signin";
+    }
+  }, []);
+
+
+  const userStocks = [
+    { name: "AAPL" }, // Apple Inc.
+    { name: "GOOGL" }, // Alphabet Inc. (Google)
+    { name: "MSFT" }, // Microsoft Corporation
+    { name: "AMZN" }, // Amazon.com, Inc.
+    { name: "TSLA" }, // Tesla, Inc.
+
+    // National Stock Exchange (NSE) Listed Stocks
+    { name: "RELIANCE" }, // Reliance Industries Limited
+    { name: "TCS" }, // Tata Consultancy Services
+    { name: "INFY" }, // Infosys Limited
+    { name: "HDFCBANK" }, // HDFC Bank Limited
+    { name: "ICICIBANK" }, // ICICI Bank Limited
+    { name: "SBIN" }, // State Bank of India
+    { name: "BHARTIARTL" }, // Bharti Airtel Limited
+    { name: "ITC" }, // ITC Limited
+    { name: "LT" }, // Larsen & Toubro Limited
+    { name: "WIPRO" }, // Wipro Limited
+    { name: "HINDUNILVR" }, // Hindustan Unilever Limited
+    { name: "MARUTI" }, // Maruti Suzuki India Limited
+    { name: "BAJAJFINSV" }, // Bajaj Finserv Limited
+    { name: "BAJFINANCE" }, // Bajaj Finance Limited
+    { name: "KOTAKBANK" }, // Kotak Mahindra Bank Limited
+    { name: "ONGC" }, // Oil and Natural Gas Corporation Limited
+    { name: "COALINDIA" }, // Coal India Limited
+    { name: "HCLTECH" }, // HCL Technologies Limited
+    { name: "TECHM" }, // Tech Mahindra Limited
+    { name: "ADANIENT" }, // Adani Enterprises Limited
+    { name: "ULTRACEMCO" }, // UltraTech Cement Limited
+    { name: "SUNPHARMA" }, // Sun Pharmaceutical Industries Limited
+    { name: "TITAN" }, // Titan Company Limited
+    { name: "DRREDDY" }, // Dr. Reddy’s Laboratories Limited
+    { name: "AXISBANK" }, // Axis Bank Limited
+  ];
+
 
   const [stockData, setStockData] = useState<{ [key: string]: any }>({});
   const [lastPricingDate, setLastPricingDate] = useState<string>("");
@@ -129,11 +137,10 @@ const AIPoweredPrediction = () => {
         {/* Table Rows */}
         {userStocks.map((stock, key) => (
           <div
-            className={`grid grid-cols-4 sm:grid-cols-8 ${
-              key === userStocks.length - 1
+            className={`grid grid-cols-4 sm:grid-cols-8 ${key === userStocks.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
-            }`}
+              }`}
             key={stock.name}
           >
             {/* Stock Name */}
@@ -177,13 +184,12 @@ const AIPoweredPrediction = () => {
             {/* Sentiment */}
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
               <p
-                className={`font-semibold ${
-                  stockData[stock.name]?.sentiment === "Bullish"
+                className={`font-semibold ${stockData[stock.name]?.sentiment === "Bullish"
                     ? "text-green-600 dark:text-green-400"
                     : stockData[stock.name]?.sentiment === "Bearish"
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-gray-500 dark:text-gray-300"
-                }`}
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-gray-500 dark:text-gray-300"
+                  }`}
               >
                 {stockData[stock.name]?.sentiment || "Loading..."}
               </p>
@@ -192,11 +198,10 @@ const AIPoweredPrediction = () => {
             {/* Advice and Confidence */}
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
               <p
-                className={`font-bold ${
-                  stockData[stock.name]?.advice === "BUY"
+                className={`font-bold ${stockData[stock.name]?.advice === "BUY"
                     ? "text-green-600 dark:text-green-400"
                     : "text-red-600 dark:text-red-400"
-                }`}
+                  }`}
               >
                 {stockData[stock.name]?.advice || "Loading..."}
               </p>

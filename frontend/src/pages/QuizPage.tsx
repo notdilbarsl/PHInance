@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-
+import React from 'react';
 // Define quiz question types
 interface QuizQuestion {
   question: string;
@@ -39,9 +39,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a stock?",
       options: [
-        "A type of bond issued by corporations", 
-        "A share of ownership in a company", 
-        "A loan given to the government", 
+        "A type of bond issued by corporations",
+        "A share of ownership in a company",
+        "A loan given to the government",
         "A physical asset owned by a company"
       ],
       correctAnswer: 1
@@ -49,9 +49,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What does IPO stand for?",
       options: [
-        "Internal Profit Organization", 
-        "International Placement Option", 
-        "Initial Public Offering", 
+        "Internal Profit Organization",
+        "International Placement Option",
+        "Initial Public Offering",
         "Investment Portfolio Overview"
       ],
       correctAnswer: 2
@@ -59,9 +59,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a dividend?",
       options: [
-        "A fee charged by brokers", 
-        "A distribution of a company's earnings to shareholders", 
-        "A type of stock option", 
+        "A fee charged by brokers",
+        "A distribution of a company's earnings to shareholders",
+        "A type of stock option",
         "The price at which a stock is initially offered"
       ],
       correctAnswer: 1
@@ -69,9 +69,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a market capitalization?",
       options: [
-        "The total value of a company's outstanding shares", 
-        "The total amount of money in a stock market", 
-        "The maximum profit a company can make", 
+        "The total value of a company's outstanding shares",
+        "The total amount of money in a stock market",
+        "The maximum profit a company can make",
         "The number of shares available for trading"
       ],
       correctAnswer: 0
@@ -79,9 +79,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a bull market?",
       options: [
-        "A market where prices are falling", 
-        "A market controlled by large institutional investors", 
-        "A market where prices are rising", 
+        "A market where prices are falling",
+        "A market controlled by large institutional investors",
+        "A market where prices are rising",
         "A market with high volatility"
       ],
       correctAnswer: 2
@@ -92,9 +92,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a market order?",
       options: [
-        "An order to buy or sell a stock at the best available current price", 
-        "An order to buy or sell a stock when it reaches a specified price", 
-        "An order that expires at the end of the trading day", 
+        "An order to buy or sell a stock at the best available current price",
+        "An order to buy or sell a stock when it reaches a specified price",
+        "An order that expires at the end of the trading day",
         "An order that guarantees a specific price"
       ],
       correctAnswer: 0
@@ -102,9 +102,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a limit order?",
       options: [
-        "An order that can only be executed during market hours", 
-        "An order to buy or sell a stock at a specific price or better", 
-        "An order that limits the total shares you can buy", 
+        "An order that can only be executed during market hours",
+        "An order to buy or sell a stock at a specific price or better",
+        "An order that limits the total shares you can buy",
         "An order that expires after a certain time period"
       ],
       correctAnswer: 1
@@ -112,9 +112,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a stop order?",
       options: [
-        "An order that stops all trading activity", 
-        "An order that becomes a market order when a specified price is reached", 
-        "An order that prevents losses beyond a certain amount", 
+        "An order that stops all trading activity",
+        "An order that becomes a market order when a specified price is reached",
+        "An order that prevents losses beyond a certain amount",
         "An order that must be executed immediately"
       ],
       correctAnswer: 1
@@ -122,9 +122,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a day order?",
       options: [
-        "An order valid only for one trading day", 
-        "An order that executes at the beginning of the trading day", 
-        "An order that executes at the end of the trading day", 
+        "An order valid only for one trading day",
+        "An order that executes at the beginning of the trading day",
+        "An order that executes at the end of the trading day",
         "An order that takes a full day to process"
       ],
       correctAnswer: 0
@@ -132,9 +132,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a Good-Til-Canceled (GTC) order?",
       options: [
-        "An order that expires at the end of the trading day", 
-        "An order that remains active until it is executed or canceled", 
-        "An order that can only be placed by institutional investors", 
+        "An order that expires at the end of the trading day",
+        "An order that remains active until it is executed or canceled",
+        "An order that can only be placed by institutional investors",
         "An order that is guaranteed to be executed"
       ],
       correctAnswer: 1
@@ -144,9 +144,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What pattern is characterized by a price movement that resembles the letter 'W'?",
       options: [
-        "Head and Shoulders", 
-        "Double Top", 
-        "Double Bottom", 
+        "Head and Shoulders",
+        "Double Top",
+        "Double Bottom",
         "Triangle Pattern"
       ],
       correctAnswer: 2
@@ -154,9 +154,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What chart pattern suggests a trend reversal with three peaks, where the middle peak is the highest?",
       options: [
-        "Triple Bottom", 
-        "Flag Pattern", 
-        "Cup and Handle", 
+        "Triple Bottom",
+        "Flag Pattern",
+        "Cup and Handle",
         "Head and Shoulders"
       ],
       correctAnswer: 3
@@ -164,9 +164,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "Which pattern is formed when the price creates two consecutive peaks at roughly the same level?",
       options: [
-        "Double Top", 
-        "Double Bottom", 
-        "Pennant", 
+        "Double Top",
+        "Double Bottom",
+        "Pennant",
         "Wedge"
       ],
       correctAnswer: 0
@@ -174,9 +174,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a 'Cup and Handle' pattern?",
       options: [
-        "A bearish reversal pattern", 
-        "A pattern that looks like the letter K", 
-        "A bullish continuation pattern resembling a cup with a handle", 
+        "A bearish reversal pattern",
+        "A pattern that looks like the letter K",
+        "A bullish continuation pattern resembling a cup with a handle",
         "A pattern indicating market volatility"
       ],
       correctAnswer: 2
@@ -184,9 +184,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What does a 'Falling Wedge' pattern typically indicate?",
       options: [
-        "Continued downward movement", 
-        "Potential bearish reversal", 
-        "Market indecision", 
+        "Continued downward movement",
+        "Potential bearish reversal",
+        "Market indecision",
         "Potential bullish reversal"
       ],
       correctAnswer: 3
@@ -196,9 +196,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What does RSI stand for in technical analysis?",
       options: [
-        "Rapid Stock Index", 
-        "Relative Strength Index", 
-        "Revenue Stream Indicator", 
+        "Rapid Stock Index",
+        "Relative Strength Index",
+        "Revenue Stream Indicator",
         "Rate of Stock Increase"
       ],
       correctAnswer: 1
@@ -206,9 +206,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is MACD?",
       options: [
-        "Moving Average Convergence Divergence", 
-        "Multiple Asset Class Distribution", 
-        "Market Average Calculation Detail", 
+        "Moving Average Convergence Divergence",
+        "Multiple Asset Class Distribution",
+        "Market Average Calculation Detail",
         "Monetary Asset Control Division"
       ],
       correctAnswer: 0
@@ -216,9 +216,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What does the Bollinger Bands indicator consist of?",
       options: [
-        "A single moving average with support and resistance lines", 
-        "Two exponential moving averages", 
-        "A moving average with two standard deviation bands", 
+        "A single moving average with support and resistance lines",
+        "Two exponential moving averages",
+        "A moving average with two standard deviation bands",
         "Three different weighted moving averages"
       ],
       correctAnswer: 2
@@ -226,9 +226,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is the Stochastic Oscillator used for?",
       options: [
-        "Predicting market crashes", 
-        "Identifying overbought and oversold conditions", 
-        "Calculating dividend yields", 
+        "Predicting market crashes",
+        "Identifying overbought and oversold conditions",
+        "Calculating dividend yields",
         "Determining market capitalization"
       ],
       correctAnswer: 1
@@ -236,9 +236,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What information does the Average Directional Index (ADX) provide?",
       options: [
-        "The direction of a price trend", 
-        "The strength of a price trend", 
-        "The average price over a specific period", 
+        "The direction of a price trend",
+        "The strength of a price trend",
+        "The average price over a specific period",
         "The volatility of a stock"
       ],
       correctAnswer: 1
@@ -248,9 +248,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is machine learning?",
       options: [
-        "Programming computers with explicit instructions", 
-        "Using AI to replace human traders", 
-        "A subset of AI where systems learn from data", 
+        "Programming computers with explicit instructions",
+        "Using AI to replace human traders",
+        "A subset of AI where systems learn from data",
         "A type of trading algorithm"
       ],
       correctAnswer: 2
@@ -258,9 +258,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a neural network in AI?",
       options: [
-        "A network of computers processing financial data", 
-        "A computational model inspired by the human brain", 
-        "A network of financial institutions", 
+        "A network of computers processing financial data",
+        "A computational model inspired by the human brain",
+        "A network of financial institutions",
         "A system for connecting traders together"
       ],
       correctAnswer: 1
@@ -268,9 +268,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What does 'supervised learning' mean?",
       options: [
-        "Learning that requires human supervision", 
-        "Learning that occurs with labeled training data", 
-        "Learning that is monitored by regulatory authorities", 
+        "Learning that requires human supervision",
+        "Learning that occurs with labeled training data",
+        "Learning that is monitored by regulatory authorities",
         "Learning that supervises other AI systems"
       ],
       correctAnswer: 1
@@ -278,9 +278,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is sentiment analysis in finance?",
       options: [
-        "Analysis of investor emotions", 
-        "Using AI to analyze text to determine market sentiment", 
-        "Analysis of overall market psychology", 
+        "Analysis of investor emotions",
+        "Using AI to analyze text to determine market sentiment",
+        "Analysis of overall market psychology",
         "Psychological evaluation of traders"
       ],
       correctAnswer: 1
@@ -288,9 +288,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is reinforcement learning?",
       options: [
-        "Learning through penalties and rewards", 
-        "Learning by repeating tasks multiple times", 
-        "Learning that reinforces existing knowledge", 
+        "Learning through penalties and rewards",
+        "Learning by repeating tasks multiple times",
+        "Learning that reinforces existing knowledge",
         "Learning that requires positive feedback"
       ],
       correctAnswer: 0
@@ -300,9 +300,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is feature engineering in model building?",
       options: [
-        "Designing new trading features", 
-        "The process of creating new variables from existing data", 
-        "Engineering software features for models", 
+        "Designing new trading features",
+        "The process of creating new variables from existing data",
+        "Engineering software features for models",
         "Building physical features of AI hardware"
       ],
       correctAnswer: 1
@@ -310,9 +310,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is overfitting in a machine learning model?",
       options: [
-        "When a model performs too well on training data", 
-        "When a model is too complex to be implemented", 
-        "When a model performs well on unseen data", 
+        "When a model performs too well on training data",
+        "When a model is too complex to be implemented",
+        "When a model performs well on unseen data",
         "When a model is fit to too many financial instruments"
       ],
       correctAnswer: 0
@@ -320,9 +320,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is cross-validation in model training?",
       options: [
-        "Validating models across different financial markets", 
-        "A resampling method to evaluate model performance on independent data", 
-        "Checking model results against human traders", 
+        "Validating models across different financial markets",
+        "A resampling method to evaluate model performance on independent data",
+        "Checking model results against human traders",
         "Comparing different models against each other"
       ],
       correctAnswer: 1
@@ -330,9 +330,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is regularization in machine learning?",
       options: [
-        "Making models comply with regulations", 
-        "A technique to prevent overfitting", 
-        "Adjusting models to regular market conditions", 
+        "Making models comply with regulations",
+        "A technique to prevent overfitting",
+        "Adjusting models to regular market conditions",
         "Regular updating of model parameters"
       ],
       correctAnswer: 1
@@ -340,9 +340,9 @@ const quizQuestions: { [key: string]: QuizQuestion[] } = {
     {
       question: "What is a confusion matrix used for?",
       options: [
-        "To confuse competitors about your model", 
-        "To visualize model performance for classification models", 
-        "To identify confusing aspects of a model", 
+        "To confuse competitors about your model",
+        "To visualize model performance for classification models",
+        "To identify confusing aspects of a model",
         "To display complex correlations between variables"
       ],
       correctAnswer: 1
@@ -423,6 +423,13 @@ const getDifficultyClass = (difficulty: string): string => {
 const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
+  React.useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "/auth/signin";
+    }
+  }, []);
+
 
   // Current question index
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -646,14 +653,12 @@ const QuizPage = () => {
               <div className="mb-8 text-center">
                 {/* Score Circle */}
                 <div
-                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
-                    score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
-                  }`}
+                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
+                    }`}
                 >
                   <span
-                    className={`text-3xl font-bold ${
-                      score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
-                    }`}
+                    className={`text-3xl font-bold ${score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
+                      }`}
                   >
                     {score}%
                   </span>
@@ -663,8 +668,8 @@ const QuizPage = () => {
                   {score >= 80
                     ? 'Previous Score: Excellent!'
                     : score >= 50
-                    ? 'Previous Score: Good Effort!'
-                    : 'Previous Score: Keep Learning!'}
+                      ? 'Previous Score: Good Effort!'
+                      : 'Previous Score: Keep Learning!'}
                 </h3>
 
                 <p className="text-body">
@@ -750,19 +755,17 @@ const QuizPage = () => {
                       <div
                         key={index}
                         onClick={() => handleOptionSelect(currentQuestion, index)}
-                        className={`flex cursor-pointer items-center rounded-md border p-4 transition ${
-                          isSelected
-                            ? 'border-primary bg-primary/5'
-                            : 'border-stroke dark:border-strokedark hover:border-primary hover:bg-primary/5'
-                        }`}
+                        className={`flex cursor-pointer items-center rounded-md border p-4 transition ${isSelected
+                          ? 'border-primary bg-primary/5'
+                          : 'border-stroke dark:border-strokedark hover:border-primary hover:bg-primary/5'
+                          }`}
                       >
                         {/* Radio bullet */}
                         <div
-                          className={`mr-4 flex h-6 w-6 items-center justify-center rounded-full ${
-                            isSelected
-                              ? 'border-2 border-primary bg-primary text-white'
-                              : 'border border-stroke dark:border-strokedark'
-                          }`}
+                          className={`mr-4 flex h-6 w-6 items-center justify-center rounded-full ${isSelected
+                            ? 'border-2 border-primary bg-primary text-white'
+                            : 'border border-stroke dark:border-strokedark'
+                            }`}
                         >
                           {isSelected && (
                             <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 16 16">
@@ -790,11 +793,10 @@ const QuizPage = () => {
                 <button
                   onClick={handlePrev}
                   disabled={currentQuestion === 0}
-                  className={`flex items-center rounded-md py-2 px-4 text-sm font-medium ${
-                    currentQuestion === 0
-                      ? 'cursor-not-allowed bg-bodydark2 text-body'
-                      : 'bg-primary text-white hover:bg-opacity-90'
-                  }`}
+                  className={`flex items-center rounded-md py-2 px-4 text-sm font-medium ${currentQuestion === 0
+                    ? 'cursor-not-allowed bg-bodydark2 text-body'
+                    : 'bg-primary text-white hover:bg-opacity-90'
+                    }`}
                 >
                   <svg className="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -834,14 +836,12 @@ const QuizPage = () => {
               {/* Score Circle */}
               <div className="mb-8 text-center">
                 <div
-                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${
-                    score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
-                  }`}
+                  className={`mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full ${score >= 80 ? 'bg-success/20' : score >= 50 ? 'bg-warning/20' : 'bg-danger/20'
+                    }`}
                 >
                   <span
-                    className={`text-3xl font-bold ${
-                      score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
-                    }`}
+                    className={`text-3xl font-bold ${score >= 80 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-danger'
+                      }`}
                   >
                     {score}%
                   </span>
@@ -850,8 +850,8 @@ const QuizPage = () => {
                   {score >= 80
                     ? 'Excellent Work!'
                     : score >= 50
-                    ? 'Good Effort!'
-                    : 'Keep Learning!'}
+                      ? 'Good Effort!'
+                      : 'Keep Learning!'}
                 </h3>
                 <p className="text-body">
                   You've earned <span className="font-bold text-primary">{earnedCoins} coins</span> for completing this

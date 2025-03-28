@@ -4,6 +4,14 @@ import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 
 const LearningCentre = () => {
+  React.useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "/auth/signin";
+    }
+  }, []);
+
+
   const [activeTab, setActiveTab] = useState('courses');
   const [completedItems, setCompletedItems] = useState<{
     videos: string[];
@@ -33,9 +41,9 @@ const LearningCentre = () => {
         videos: [...completedItems.videos, videoId],
         coins: completedItems.coins + 50, // Add 50 coins when a video is watched
       };
-      
+
       setCompletedItems(updatedItems);
-      
+
       // Save to localStorage
       try {
         localStorage.setItem('completedLearningItems', JSON.stringify(updatedItems));
@@ -65,7 +73,7 @@ const LearningCentre = () => {
   return (
     <>
       <Breadcrumb pageName="Learning Centre" />
-      
+
       {/* Total Earned Coins */}
       <div className="mb-5 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex items-center justify-between">
@@ -79,24 +87,24 @@ const LearningCentre = () => {
         </div>
         <p className="text-sm text-body">Earn coins by watching videos and completing quizzes</p>
       </div>
-      
+
       {/* Tabs for All Courses, Videos, Quizzes */}
       <div className="mb-8">
         <div className="border-b border-stroke px-4 dark:border-strokedark">
           <nav className="-mb-px flex">
-            <button 
+            <button
               onClick={() => setActiveTab('courses')}
               className={`inline-block py-4 px-4 text-sm font-medium ${activeTab === 'courses' ? 'text-primary border-b-2 border-primary' : 'text-body hover:text-primary'}`}
             >
               All Courses
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('videos')}
               className={`inline-block py-4 px-4 text-sm font-medium ${activeTab === 'videos' ? 'text-primary border-b-2 border-primary' : 'text-body hover:text-primary'}`}
             >
               Videos
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('quizzes')}
               className={`inline-block py-4 px-4 text-sm font-medium ${activeTab === 'quizzes' ? 'text-primary border-b-2 border-primary' : 'text-body hover:text-primary'}`}
             >
@@ -105,7 +113,7 @@ const LearningCentre = () => {
           </nav>
         </div>
       </div>
-      
+
       {/* Courses Tab Content */}
       {activeTab === 'courses' && (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -113,13 +121,13 @@ const LearningCentre = () => {
           <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-success/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 rounded-lg border-2 border-primary/20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-10px)' }}></div>
-            
+
             {/* Course Card 3D Elements */}
             <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-white dark:bg-boxdark opacity-10 transform rotate-2 scale-105 group-hover:rotate-3 transition-all duration-500" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-5px)' }}></div>
-            
+
             <h3 className="mb-4 text-xl font-semibold text-black dark:text-white group-hover:text-primary transition-all duration-300 transform group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>Stock Market Basics</h3>
             <p className="mb-4 text-base transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>Learn the fundamentals of stock market trading</p>
-            
+
             <div className="mb-6 transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>
               <div className="mb-2 flex items-center">
                 <div className="mr-2 h-4 w-4 min-w-[1rem] rounded-full bg-primary flex-shrink-0"></div>
@@ -142,11 +150,11 @@ const LearningCentre = () => {
                 <span className="text-body">Order Types Quiz</span>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
-              <Link to="#" 
+              <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('videos'); }}
-                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,7 +164,7 @@ const LearningCentre = () => {
               </Link>
               <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('quizzes'); }}
-                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -166,18 +174,18 @@ const LearningCentre = () => {
               </Link>
             </div>
           </div>
-          
+
           {/* Technical Analysis Card */}
           <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-warning/10 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 rounded-lg border-2 border-warning/20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-10px)' }}></div>
-            
+
             {/* Course Card 3D Elements */}
             <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-white dark:bg-boxdark opacity-10 transform rotate-2 scale-105 group-hover:rotate-3 transition-all duration-500" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-5px)' }}></div>
-            
+
             <h3 className="mb-4 text-xl font-semibold text-black dark:text-white group-hover:text-primary transition-all duration-300 transform group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>Technical Analysis</h3>
             <p className="mb-4 text-base transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>Master the art of reading charts and patterns</p>
-            
+
             <div className="mb-6 transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>
               <div className="mb-2 flex items-center">
                 <div className="mr-2 h-4 w-4 min-w-[1rem] rounded-full bg-primary flex-shrink-0"></div>
@@ -200,11 +208,11 @@ const LearningCentre = () => {
                 <span className="text-body">Indicators Quiz</span>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
-              <Link to="#" 
+              <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('videos'); }}
-                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,7 +222,7 @@ const LearningCentre = () => {
               </Link>
               <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('quizzes'); }}
-                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -224,18 +232,18 @@ const LearningCentre = () => {
               </Link>
             </div>
           </div>
-          
+
           {/* AI in Finance Card */}
           <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
             <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-danger/10 to-success/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div className="absolute inset-0 rounded-lg border-2 border-danger/20 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-10px)' }}></div>
-            
+
             {/* Course Card 3D Elements */}
             <div className="absolute top-0 left-0 w-full h-full rounded-lg bg-white dark:bg-boxdark opacity-10 transform rotate-2 scale-105 group-hover:rotate-3 transition-all duration-500" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-5px)' }}></div>
-            
+
             <h3 className="mb-4 text-xl font-semibold text-black dark:text-white group-hover:text-primary transition-all duration-300 transform group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>AI in Finance</h3>
             <p className="mb-4 text-base transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>Discover how AI is transforming financial markets</p>
-            
+
             <div className="mb-6 transform transition-all duration-500 group-hover:translate-z-5" style={{ transformStyle: 'preserve-3d' }}>
               <div className="mb-2 flex items-center">
                 <div className="mr-2 h-4 w-4 min-w-[1rem] rounded-full bg-primary flex-shrink-0"></div>
@@ -258,11 +266,11 @@ const LearningCentre = () => {
                 <span className="text-body">Model Building Quiz</span>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
-              <Link to="#" 
+              <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('videos'); }}
-                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-primary py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -272,7 +280,7 @@ const LearningCentre = () => {
               </Link>
               <Link to="#"
                 onClick={(e) => { e.preventDefault(); setActiveTab('quizzes'); }}
-                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg" 
+                className="inline-flex items-center justify-center rounded-md bg-success py-3 px-6 text-center font-bold text-white hover:bg-opacity-90 shadow-md transition-all duration-500 relative transform group-hover:translate-z-10 group-hover:shadow-lg"
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -284,7 +292,7 @@ const LearningCentre = () => {
           </div>
         </div>
       )}
-      
+
       {/* Videos Tab Content */}
       {activeTab === 'videos' && (
         <>
@@ -307,7 +315,7 @@ const LearningCentre = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 xl:grid-cols-3 relative" style={{ perspective: '1000px' }}>
             {/* Video Card 1 - Introduction to Stocks */}
             <div className="group relative rounded-lg border border-stroke bg-white shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
@@ -315,9 +323,9 @@ const LearningCentre = () => {
               <div className="relative overflow-hidden rounded-t-lg aspect-square transform transition-all duration-500 group-hover:translate-z-10" style={{ transformStyle: 'preserve-3d', transformOrigin: 'center center' }}>
                 <div className="w-full h-full bg-gradient-to-br from-primary/30 to-success/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  <a 
-                    href="https://youtu.be/HNPbY6fSeo8?si=pFmph6Pd5jt2nja5" 
-                    target="_blank" 
+                  <a
+                    href="https://youtu.be/HNPbY6fSeo8?si=pFmph6Pd5jt2nja5"
+                    target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setTimeout(() => handleVideoComplete('intro-stocks'), 5000)}
                     className="relative flex h-48 w-48 items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transform transition-all duration-500 hover:scale-110 shadow-xl group-hover:translate-z-20"
@@ -338,7 +346,7 @@ const LearningCentre = () => {
                 </div>
                 <div className="absolute bottom-4 right-4 transform transition-all duration-500 group-hover:translate-z-15 z-10">
                   <svg className="h-8 w-8 text-red-600 filter drop-shadow-md" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                   </svg>
                 </div>
                 {completedItems.videos.includes('intro-stocks') && (
@@ -366,16 +374,16 @@ const LearningCentre = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Video Card 2 - Chart Patterns Explained */}
             <div className="group relative rounded-lg border border-stroke bg-white shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-warning/20 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative overflow-hidden rounded-t-lg aspect-square transform transition-all duration-500 group-hover:translate-z-10" style={{ transformStyle: 'preserve-3d', transformOrigin: 'center center' }}>
                 <div className="w-full h-full bg-gradient-to-br from-warning/30 to-primary/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  <a 
-                    href="https://youtu.be/aRlWle9smww?si=6hwQLg7NUFgBLSnJ" 
-                    target="_blank" 
+                  <a
+                    href="https://youtu.be/aRlWle9smww?si=6hwQLg7NUFgBLSnJ"
+                    target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setTimeout(() => handleVideoComplete('chart-patterns'), 5000)}
                     className="relative flex h-48 w-48 items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transform transition-all duration-500 hover:scale-110 shadow-xl group-hover:translate-z-20"
@@ -396,7 +404,7 @@ const LearningCentre = () => {
                 </div>
                 <div className="absolute bottom-4 right-4 transform transition-all duration-500 group-hover:translate-z-15 z-10">
                   <svg className="h-8 w-8 text-red-600 filter drop-shadow-md" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                   </svg>
                 </div>
                 {completedItems.videos.includes('chart-patterns') && (
@@ -424,16 +432,16 @@ const LearningCentre = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Video Card 3 - AI Trading Strategies */}
             <div className="group relative rounded-lg border border-stroke bg-white shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-danger/20 to-success/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative overflow-hidden rounded-t-lg aspect-square transform transition-all duration-500 group-hover:translate-z-10" style={{ transformStyle: 'preserve-3d', transformOrigin: 'center center' }}>
                 <div className="w-full h-full bg-gradient-to-br from-danger/30 to-success/30"></div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  <a 
-                    href="https://youtu.be/gWuHTHjyKkg?si=YQnyALCdAxssT5zZ" 
-                    target="_blank" 
+                  <a
+                    href="https://youtu.be/gWuHTHjyKkg?si=YQnyALCdAxssT5zZ"
+                    target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setTimeout(() => handleVideoComplete('ai-trading'), 5000)}
                     className="relative flex h-48 w-48 items-center justify-center rounded-full bg-primary text-white hover:bg-opacity-90 transform transition-all duration-500 hover:scale-110 shadow-xl group-hover:translate-z-20"
@@ -454,7 +462,7 @@ const LearningCentre = () => {
                 </div>
                 <div className="absolute bottom-4 right-4 transform transition-all duration-500 group-hover:translate-z-15 z-10">
                   <svg className="h-8 w-8 text-red-600 filter drop-shadow-md" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
                   </svg>
                 </div>
                 {completedItems.videos.includes('ai-trading') && (
@@ -485,7 +493,7 @@ const LearningCentre = () => {
           </div>
         </>
       )}
-      
+
       {/* Quizzes Tab Content */}
       {activeTab === 'quizzes' && (
         <>
@@ -508,7 +516,7 @@ const LearningCentre = () => {
               </div>
             </div>
           </div>
-        
+
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
             {/* Quiz Card 1 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
@@ -551,10 +559,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['basic-terms'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['basic-terms'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['basic-terms'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['basic-terms'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['basic-terms'].score}%
                     </span>
                   </div>
@@ -569,14 +576,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/basic-terms"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('basic-terms') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('basic-terms')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('basic-terms') ? (
@@ -596,7 +602,7 @@ const LearningCentre = () => {
                 )}
               </Link>
             </div>
-            
+
             {/* Quiz Card 2 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-warning/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -638,10 +644,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['order-types'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['order-types'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['order-types'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['order-types'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['order-types'].score}%
                     </span>
                   </div>
@@ -656,14 +661,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/order-types"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('order-types') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('order-types')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('order-types') ? (
@@ -683,7 +687,7 @@ const LearningCentre = () => {
                 )}
               </Link>
             </div>
-            
+
             {/* Quiz Card 3 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-warning/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -725,10 +729,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['pattern-recognition'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['pattern-recognition'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['pattern-recognition'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['pattern-recognition'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['pattern-recognition'].score}%
                     </span>
                   </div>
@@ -743,14 +746,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/pattern-recognition"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('pattern-recognition') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('pattern-recognition')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('pattern-recognition') ? (
@@ -770,7 +772,7 @@ const LearningCentre = () => {
                 )}
               </Link>
             </div>
-            
+
             {/* Quiz Card 4 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-warning/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -812,10 +814,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['indicators'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['indicators'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['indicators'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['indicators'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['indicators'].score}%
                     </span>
                   </div>
@@ -830,14 +831,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/indicators"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('indicators') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('indicators')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('indicators') ? (
@@ -857,7 +857,7 @@ const LearningCentre = () => {
                 )}
               </Link>
             </div>
-            
+
             {/* Quiz Card 5 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-danger/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -899,10 +899,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['ai-concepts'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['ai-concepts'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['ai-concepts'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['ai-concepts'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['ai-concepts'].score}%
                     </span>
                   </div>
@@ -917,14 +916,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/ai-concepts"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('ai-concepts') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('ai-concepts')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('ai-concepts') ? (
@@ -944,7 +942,7 @@ const LearningCentre = () => {
                 )}
               </Link>
             </div>
-            
+
             {/* Quiz Card 6 */}
             <div className="group relative rounded-lg border border-stroke bg-white p-6 shadow-default transition-all duration-500 hover:shadow-2xl hover:translate-y-[-8px] dark:border-strokedark dark:bg-boxdark" style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}>
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/10 to-danger/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -986,10 +984,9 @@ const LearningCentre = () => {
                   </div>
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
-                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${
-                      completedItems.quizScores['model-building'].score >= 80 ? 'text-success bg-success/10' :
-                      completedItems.quizScores['model-building'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
-                    }`}>
+                    <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['model-building'].score >= 80 ? 'text-success bg-success/10' :
+                        completedItems.quizScores['model-building'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      }`}>
                       {completedItems.quizScores['model-building'].score}%
                     </span>
                   </div>
@@ -1004,14 +1001,13 @@ const LearningCentre = () => {
                   </div>
                 </div>
               )}
-              
+
               <Link
                 to="/quiz/model-building"
-                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${
-                  completedItems.quizzes.includes('model-building') 
+                className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('model-building')
                     ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                     : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                }`}
+                  }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
                 {completedItems.quizzes.includes('model-building') ? (

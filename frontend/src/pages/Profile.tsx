@@ -31,6 +31,15 @@ const Profile = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+  React.useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "/auth/signin";
+    }
+  }, []);
+
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {

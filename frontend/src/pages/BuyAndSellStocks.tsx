@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 
 const BuyAndSellStocks = () => {
+  React.useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      window.location.href = "/auth/signin";
+    }
+  }, []);
+
+
   const userStocks = [
     { name: "NSE: HDFCBANK" },
     { name: "NSE: BAJAJFINSV" },
@@ -59,9 +67,8 @@ const BuyAndSellStocks = () => {
         {/* Table Rows */}
         {userStocks.map((stock, key) => (
           <div
-            className={`grid grid-cols-4 items-center ${
-              key === userStocks.length - 1 ? "" : "border-b border-stroke dark:border-strokedark"
-            }`}
+            className={`grid grid-cols-4 items-center ${key === userStocks.length - 1 ? "" : "border-b border-stroke dark:border-strokedark"
+              }`}
             key={stock.name}
           >
             {/* Stock Name */}
