@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import RiskManagement from './pages/RiskManagement'
+import LearningCentre from './pages/LearningCentre'
 import Support from './pages/Support';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
@@ -24,6 +25,9 @@ import Behavioural from './pages/Behavioural';
 import StockScreener from './pages/StockScreener';
 import SellOrder from './pages/SellOrder';
 import BuyAndSellStocks from './pages/BuyAndSellStocks';
+import QuizPage from './pages/QuizPage';
+
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -130,11 +134,21 @@ function App() {
             </>
           }
         />
+        
         <Route
           path="/riskmanagement"
           element={
             <>
               <RiskManagement />
+            </>
+          }
+        />
+
+        <Route
+          path="/learning"
+          element={
+            <>
+              <LearningCentre />
             </>
           }
         />
@@ -146,6 +160,15 @@ function App() {
             </>
           }
         />
+
+
+        <Route 
+          path="/quiz/:quizId" 
+          element={
+            <QuizPage />
+          } 
+        />
+
         <Route
           path="/support"
           element={

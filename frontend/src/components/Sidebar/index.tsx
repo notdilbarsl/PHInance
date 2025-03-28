@@ -355,6 +355,51 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Risk Management --> */}
 
 
+              {/* <!-- Menu Item Learning Centre --> */}
+              <li>
+                <NavLink
+                  to="/learning"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('learning') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                <svg
+  className="stroke-current text-white"
+  width="20"
+  height="20"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M4 19.5C4 19.5 5.5 18 8 18C10.5 18 12 19.5 12 19.5V5C12 5 10.5 3.5 8 3.5C5.5 3.5 4 5 4 5V19.5Z"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+  <path
+    d="M12 5C12 5 13.5 3.5 16 3.5C18.5 3.5 20 5 20 5V19.5C20 19.5 18.5 18 16 18C13.5 18 12 19.5 12 19.5"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</svg>
+
+
+
+
+
+
+
+
+                  Learning Centre
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Learning Centre--> */}
+              
+
               {/* <!-- Menu Item FAQ --> */}
               <li>
                 <NavLink
