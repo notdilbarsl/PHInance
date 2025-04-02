@@ -15,11 +15,11 @@ const Header = (props: {
     console.log(token)
     const fetchAllPrices = async () => {
       const response = await fetch("https://phinance-backend.onrender.com/user/balance", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
+      if (response.status != 200) return
       const data = await response.json()
       console.log(data)
       setBalance(data)
     };
-
     fetchAllPrices();
   }, []);
 
