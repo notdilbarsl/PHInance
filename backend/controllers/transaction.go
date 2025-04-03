@@ -34,10 +34,6 @@ func TransactionHandler(c *gin.Context) {
 		c.JSON(http.StatusBadGateway, gin.H{ERROR: "Error"})
 		return
 	}
-	if user.Balance < (float32(req.Quantity) * req.CurrPrice) {
-		c.JSON(http.StatusOK, gin.H{ERROR: "Not enough Balance"})
-		return
-	}
 	transaction := models.Transaction{
 		UserID:   user.ID,
 		TickerID: req.Symbol,
@@ -45,18 +41,27 @@ func TransactionHandler(c *gin.Context) {
 		Quantity: req.Quantity,
 		Price:    req.CurrPrice,
 	}
+	if req.Type == "SELL" {
+		user.Balance += req.CurrPrice * float32(req.Quantity)
+	} else {
 
-	user.Balance -= req.CurrPrice * float32(req.Quantity)
+		if user.Balance < (float32(req.Quantity) * req.CurrPrice) {
+			c.JSON(http.StatusOK, gin.H{ERROR: "Not enough Balance"})
+			return
+		}
 
-	// TODO: Atomicity
-	if tx := phiDb.Updates(&user); tx.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "DB Error"})
-		return
+		user.Balance -= req.CurrPrice * float32(req.Quantity)
 	}
+	// TODO: Atomicity
 	if err := updatePortfolio(user.ID, &transaction); err != nil {
 		c.JSON(http.StatusOK, gin.H{ERROR: err.Error()})
 		return
 	}
+	if tx := phiDb.Updates(&user); tx.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "DB Error"})
+		return
+	}
+
 	if tx := phiDb.Create(&transaction); tx.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "DB eror"})
 		return
