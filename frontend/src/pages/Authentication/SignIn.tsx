@@ -16,12 +16,12 @@ const SignIn: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-  
+
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/user/login`, {
         method: 'POST',
@@ -30,16 +30,16 @@ const SignIn: React.FC = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-  
+
       if (data.token) {
         localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userName', data.name);  // Store the user's name globally
+        localStorage.setItem('name', data.name);  // Store the user's name globally
         navigate('/'); // Redirect to dashboard
       }
     } catch (err) {
@@ -50,7 +50,7 @@ const SignIn: React.FC = () => {
       }
     }
   };
-  
+
 
   return (
     <>

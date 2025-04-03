@@ -28,17 +28,12 @@ import TableOne from '../../components/Tables/TableOne';
 import TableTwo from '../../components/Tables/TableTwo';
 
 const ECommerce: React.FC = () => {
-  const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       window.location.href = "/auth/signin";
     }
-    setUserName(localStorage.getItem('userName'));
-    // Retrieve user name from localStorage
-    // const storedUserName = localStorage.getItem("userName");
-    // if (storedUserName) {
     //   setUserName(storedUserName);
     // }
   }, []);
@@ -54,7 +49,6 @@ const ECommerce: React.FC = () => {
 
           {/* Display the user's name in the top-right corner */}
           <div className="mr-10 font-medium text-black dark:text-white">
-          Welcome{userName ? userName : 'Guest'}!
           </div>
         </div>
       </div>

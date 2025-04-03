@@ -15,9 +15,8 @@ const DropdownUser = () => {
         {/* Name + Title (keep this) */}
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            ABC
+            {localStorage.getItem("name")}
           </span>
-          <span className="block text-xs">Web Developer</span>
         </span>
 
         {/* Removed the profile image */}
