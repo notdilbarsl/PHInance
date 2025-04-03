@@ -57,7 +57,7 @@ func UserLogin(c *gin.Context) {
 		return
 	}
 	if token, err := GenerateJWT(userRes.ID); err == nil {
-		c.JSON(http.StatusOK, gin.H{MESSAGE: "authenticated", "token": token})
+		c.JSON(http.StatusOK, gin.H{MESSAGE: "authenticated", "token": token, "name": userRes.Name})
 		return
 	}
 

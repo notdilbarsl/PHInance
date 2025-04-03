@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 const BuyOrder = () => {
-  React.useEffect(() => {
+  const { stockName } = useParams(); // Get stockName from URL
+
+  useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       window.location.href = "/auth/signin";

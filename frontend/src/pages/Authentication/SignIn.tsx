@@ -5,6 +5,7 @@ import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from "../../config.ts";
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,32 +16,30 @@ const SignIn: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
+  
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
-
+  
     try {
-      const response = await fetch('https://phinance-backend.onrender.com/user/login', {
+      const response = await fetch(`https://${API_BASE_URL}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: email,
-          password: password
-        }),
+        body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-
+  
       if (data.token) {
         localStorage.setItem('authToken', data.token);
+        localStorage.setItem('userName', data.name);  // Store the user's name globally
         navigate('/'); // Redirect to dashboard
       }
     } catch (err) {
@@ -51,6 +50,7 @@ const SignIn: React.FC = () => {
       }
     }
   };
+  
 
   return (
     <>
