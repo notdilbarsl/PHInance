@@ -103,7 +103,7 @@ function App() {
           }
         />
         <Route
-          path="/buyorder"
+          path="/buy/:stockName"
           element={
             <>
               <BuyOrder />
