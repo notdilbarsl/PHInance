@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sayymeer/feinance-backend/models"
-	"github.com/sayymeer/feinance-backend/utils"
+	"gorm.io/gorm"
 )
 
 type response struct {
@@ -13,6 +14,7 @@ type response struct {
 	Ticker        string  `json:"ticker"`
 	IsWatchlisted bool    `json:"is_watchlisted"`
 	CurrentPrice  float32 `json:"curr_price"`
+	Code          string  `json:"code"`
 }
 
 func DashboardHandler(c *gin.Context) {
@@ -48,9 +50,46 @@ func DashboardHandler(c *gin.Context) {
 			Name:          ticker.Name,
 			Ticker:        ticker.Symbol,
 			IsWatchlisted: tickerMap[ticker.Symbol], // Check if in watchlist
-			CurrentPrice:  utils.CurrentPrice(ticker.Code),
+			Code:          ticker.Code,
 		})
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func WatchlistHandler(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	ticker := c.Param("ticker")
+
+	var watchlistEntry models.Watchlist
+
+	// Check if the ticker is already in the user's watchlist
+	err := phiDb.Where("user_id = ? AND ticker = ?", userID, ticker).First(&watchlistEntry).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// If not found, add it to the watchlist
+		newEntry := models.Watchlist{
+			UserID: userID.(uint), // Ensure correct type
+			Ticker: ticker,
+		}
+
+		if err := phiDb.Create(&newEntry).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to watchlist"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Ticker added to watchlist"})
+		return
+	} else if err != nil {
+		// Handle any other database errors
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
+
+	// If ticker already exists, delete it from the watchlist
+	if err := phiDb.Delete(&watchlistEntry).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove from watchlist"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Ticker removed from watchlist"})
 }
