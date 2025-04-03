@@ -16,6 +16,7 @@ func FinRoutes(r *gin.Engine) {
 
 	user := r.Group("/user")
 	{
+		user.GET("/data/:ticker/:days", controllers.DataHandler)
 		user.POST("/signup", controllers.UserSignUp)
 		user.POST("/login", controllers.UserLogin)
 		user.Use(controllers.AuthenticateUser())
@@ -26,5 +27,6 @@ func FinRoutes(r *gin.Engine) {
 		user.GET("/behaviour", controllers.BehaviourHandler)
 		user.GET("/dashboard", controllers.DashboardHandler)
 		user.GET("/watchlist/:ticker", controllers.WatchlistHandler)
+
 	}
 }
