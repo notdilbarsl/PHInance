@@ -1,7 +1,17 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 
 app = FastAPI()
+
+# Enable CORS for all origins (*)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow any domain
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/{ticker}")
 async def get_stock_info(ticker: str):
