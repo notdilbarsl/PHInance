@@ -3,6 +3,7 @@ import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../config';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -14,7 +15,7 @@ const Header = (props: {
     const token = localStorage.getItem("authToken")
     console.log(token)
     const fetchAllPrices = async () => {
-      const response = await fetch("https://phinance-backend.onrender.com/user/balance", { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
+      const response = await fetch(`${API_BASE_URL}/user/balance`, { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
       if (response.status != 200) return
       const data = await response.json()
       console.log(data)

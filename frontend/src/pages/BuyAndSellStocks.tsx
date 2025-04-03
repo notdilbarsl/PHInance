@@ -41,7 +41,13 @@ const BuyAndSellStocks = () => {
   };
 
   const handleBuyClick = (stockName: string) => {
-    navigate(`/buy/${encodeURIComponent(stockName)}`);
+    const cleanStockName = stockName.replace("NSE: ", ""); // Remove "NSE: " prefix
+    navigate(`/buy/${encodeURIComponent(cleanStockName)}`);
+  };
+
+  const handleSellClick = (stockName: string) => {
+    const cleanStockName = stockName.replace("NSE: ", ""); // Remove "NSE: " prefix
+    navigate(`/sell/${encodeURIComponent(cleanStockName)}`);
   };
 
   return (
@@ -94,7 +100,9 @@ const BuyAndSellStocks = () => {
               >
                 Buy
               </button>
-              <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200">
+              <button 
+              onClick={() => handleSellClick(stock.name)}
+              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200">
                 Sell
               </button>
             </div>

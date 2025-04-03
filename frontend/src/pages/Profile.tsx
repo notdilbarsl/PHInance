@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import profilePic from '../images/user/user-06.png';
+import { API_BASE_URL } from '../config';
 
 interface User {
   id: number;
@@ -44,7 +45,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("authToken") // Assuming token is stored here
-        const response = await fetch('https://phinance-backend.onrender.com/user/profile', {
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

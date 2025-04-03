@@ -110,6 +110,14 @@ function App() {
             </>
           }
         />
+        <Route 
+          path="/sell/:stockName" 
+          element={
+            <>
+              <SellOrder />
+            </>
+          }
+        />
         <Route
           path="/sellorder"
           element={

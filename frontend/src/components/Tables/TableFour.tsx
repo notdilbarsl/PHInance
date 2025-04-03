@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../config';
 
 interface Stock {
   id: number;
@@ -39,7 +40,7 @@ const TableFour = () => {
     const fetchStockData = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await fetch('https://phinance-backend.onrender.com/user/profile', {
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
