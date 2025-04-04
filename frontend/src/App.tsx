@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import { Toaster } from 'react-hot-toast';
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
@@ -110,8 +111,8 @@ function App() {
             </>
           }
         />
-        <Route 
-          path="/sell/:stockName" 
+        <Route
+          path="/sell/:stockName"
           element={
             <>
               <SellOrder />
@@ -142,7 +143,7 @@ function App() {
             </>
           }
         />
-        
+
         <Route
           path="/riskmanagement"
           element={
@@ -170,11 +171,11 @@ function App() {
         />
 
 
-        <Route 
-          path="/quiz/:quizId" 
+        <Route
+          path="/quiz/:quizId"
           element={
             <QuizPage />
-          } 
+          }
         />
 
         <Route
@@ -243,6 +244,8 @@ function App() {
           }
         />
       </Routes>
+      <Toaster position="top-right" />
+
     </DefaultLayout>
   );
 }

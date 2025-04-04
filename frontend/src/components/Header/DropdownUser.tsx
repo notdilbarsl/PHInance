@@ -1,9 +1,26 @@
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.clear();
+
+    // Clear all cookies
+    document.cookie.split(";").forEach(cookie => {
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    });
+
+    // Redirect to sign-in page
+    navigate('/auth/signin');
+  };
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -12,17 +29,12 @@ const DropdownUser = () => {
         className="flex items-center gap-2"
         to="#"
       >
-        {/* Name + Title (keep this) */}
+        {/* Name + Title */}
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
             {localStorage.getItem("name")}
           </span>
         </span>
-
-        {/* Removed the profile image */}
-        {/* <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
-        </span> */}
 
         {/* Dropdown Arrow */}
         <svg
@@ -42,10 +54,12 @@ const DropdownUser = () => {
         </svg>
       </Link>
 
-      {/* Dropdown */}
       {dropdownOpen && (
         <div className="absolute right-0 mt-4 w-48 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <button className="flex w-full items-center gap-3.5 px-6 py-4 text-sm font-medium text-left hover:text-primary dark:text-white dark:hover:text-primary transition">
+          <button
+            className="flex w-full items-center gap-3.5 px-6 py-4 text-sm font-medium text-left hover:text-primary dark:text-white dark:hover:text-primary transition"
+            onClick={handleLogout}
+          >
             <svg
               className="fill-current"
               width="22"
@@ -68,3 +82,4 @@ const DropdownUser = () => {
 };
 
 export default DropdownUser;
+

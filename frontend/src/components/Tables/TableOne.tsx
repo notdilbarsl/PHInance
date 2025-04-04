@@ -16,7 +16,7 @@ const StockTable = () => {
     console.log(token)
     const fetchprice = async (ticker: string) => {
       try {
-        const response = await fetch(`${API_BASE_URL}/user/data/${ticker}/1`)
+        const response = await fetch(`https://yfinance-bcyb.onrender.com/price/${ticker}`)
         const data = await response.json()
         return data.datasets[0].values[0][1]
 
