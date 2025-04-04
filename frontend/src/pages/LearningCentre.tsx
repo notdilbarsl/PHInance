@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-uses-react */
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-
+import React from 'react';
 const LearningCentre = () => {
   React.useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -560,7 +559,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['basic-terms'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['basic-terms'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['basic-terms'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['basic-terms'].score}%
                     </span>
@@ -580,8 +579,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/basic-terms"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('basic-terms')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -645,7 +644,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['order-types'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['order-types'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['order-types'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['order-types'].score}%
                     </span>
@@ -665,8 +664,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/order-types"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('order-types')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -730,7 +729,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['pattern-recognition'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['pattern-recognition'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['pattern-recognition'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['pattern-recognition'].score}%
                     </span>
@@ -750,8 +749,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/pattern-recognition"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('pattern-recognition')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -815,7 +814,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['indicators'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['indicators'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['indicators'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['indicators'].score}%
                     </span>
@@ -835,8 +834,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/indicators"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('indicators')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -900,7 +899,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['ai-concepts'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['ai-concepts'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['ai-concepts'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['ai-concepts'].score}%
                     </span>
@@ -920,8 +919,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/ai-concepts"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('ai-concepts')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
@@ -985,7 +984,7 @@ const LearningCentre = () => {
                   <div className="mb-2 flex justify-between">
                     <span className="text-sm font-medium text-body">Your Score:</span>
                     <span className={`text-sm font-bold px-2 py-0.5 rounded ${completedItems.quizScores['model-building'].score >= 80 ? 'text-success bg-success/10' :
-                        completedItems.quizScores['model-building'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
+                      completedItems.quizScores['model-building'].score >= 50 ? 'text-warning bg-warning/10' : 'text-danger bg-danger/10'
                       }`}>
                       {completedItems.quizScores['model-building'].score}%
                     </span>
@@ -1005,8 +1004,8 @@ const LearningCentre = () => {
               <Link
                 to="/quiz/model-building"
                 className={`inline-flex w-full items-center justify-center rounded-md shadow-md transition-all duration-500 relative group-hover:shadow-lg transform group-hover:translate-z-10 ${completedItems.quizzes.includes('model-building')
-                    ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
-                    : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  ? 'bg-success py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
+                  : 'bg-primary py-3 px-10 text-center font-bold text-white hover:bg-opacity-90'
                   }`}
                 style={{ transformStyle: 'preserve-3d' }}
               >
