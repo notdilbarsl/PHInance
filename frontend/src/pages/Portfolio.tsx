@@ -1,7 +1,6 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import PortfolioTable from '../components/Tables/PortfolioTable';
-
-
+import React from 'react';
 const Portfolio = () => {
   React.useEffect(() => {
     const authToken = localStorage.getItem("authToken");
