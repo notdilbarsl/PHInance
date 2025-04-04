@@ -2,29 +2,13 @@ import { Link } from 'react-router-dom';
 import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
-import { useEffect, useState } from 'react';
-import { API_BASE_URL } from '../../config';
+import { useBalance } from './BalanceContext';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
-  const [balance, setBalance] = useState(0)
-
-  useEffect(() => {
-    const token = localStorage.getItem("authToken")
-    console.log(token)
-    const fetchAllPrices = async () => {
-      const response = await fetch(`${API_BASE_URL}/user/balance`, { method: 'GET', headers: { "Authorization": `Bearer ${token}` } })
-      if (response.status != 200) return
-      const data = await response.json()
-      console.log(data)
-      setBalance(data)
-    };
-    fetchAllPrices();
-  }, []);
-
-
+  const { balance } = useBalance(); // Access balance from context
 
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">

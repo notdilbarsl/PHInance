@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { API_BASE_URL } from "../config";
 import { Chart } from "react-chartjs-2";
+import { useBalance } from "../components/Header/BalanceContext";
 
 // Register required chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
@@ -22,12 +23,16 @@ const SellOrder = () => {
   // const [triggerPrice, setTriggerPrice] = useState<number | "">("");
   // const [marketPrice, setMarketPrice] = useState<number>(1752.50);
 
+  const { updateBalance } = useBalance(); // Access updateBalance from context
+  const navigate = useNavigate(); // For redirection
+
+  // Authentication check
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      window.location.href = "/auth/signin";
+      navigate("/auth/signin");
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (stockName) {
@@ -104,6 +109,7 @@ const SellOrder = () => {
       );
 
       alert("Sell order placed successfully!");
+      updateBalance();
     } catch (error: unknown) {
       console.error("Error placing sell order:", error);
 
