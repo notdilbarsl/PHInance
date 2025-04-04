@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { BalanceProvider } from './components/Header/BalanceContext'; // Import the provider
 
+import { Toaster } from 'react-hot-toast';
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
@@ -45,6 +46,7 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
+<<<<<<< HEAD
     <BalanceProvider>
       <DefaultLayout>
         <Routes>
@@ -153,6 +155,115 @@ function App() {
               </>
             }
           />
+=======
+    <DefaultLayout>
+      <Routes>
+        <Route
+          index
+          element={
+            <>
+              <ECommerce />
+            </>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <>
+              <Calendar />
+            </>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <>
+              <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/forms/form-elements"
+          element={
+            <>
+              <FormElements />
+            </>
+          }
+        />
+        <Route
+          path="/forms/form-layout"
+          element={
+            <>
+              <FormLayout />
+            </>
+          }
+        />
+        <Route
+          path="/tables"
+          element={
+            <>
+              <Tables />
+            </>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <>
+              <Portfolio />
+            </>
+          }
+        />
+        <Route
+          path="/buy/:stockName"
+          element={
+            <>
+              <BuyOrder />
+            </>
+          }
+        />
+        <Route
+          path="/sell/:stockName"
+          element={
+            <>
+              <SellOrder />
+            </>
+          }
+        />
+        <Route
+          path="/sellorder"
+          element={
+            <>
+              <SellOrder />
+            </>
+          }
+        />
+        <Route
+          path="/buysellstocks"
+          element={
+            <>
+              <BuyAndSellStocks />
+            </>
+          }
+        />
+        <Route
+          path="/Behavioural"
+          element={
+            <>
+              <Behavioural />
+            </>
+          }
+        />
+
+        <Route
+          path="/riskmanagement"
+          element={
+            <>
+              <RiskManagement />
+            </>
+          }
+        />
+>>>>>>> 7921d045656ecfa74e501013fa3d0565efc129c4
 
           <Route
             path="/learning"
@@ -172,12 +283,21 @@ function App() {
           />
 
 
+<<<<<<< HEAD
           <Route 
             path="/quiz/:quizId" 
             element={
               <QuizPage />
             } 
           />
+=======
+        <Route
+          path="/quiz/:quizId"
+          element={
+            <QuizPage />
+          }
+        />
+>>>>>>> 7921d045656ecfa74e501013fa3d0565efc129c4
 
           <Route
             path="/support"
@@ -196,6 +316,7 @@ function App() {
             }
           />
 
+<<<<<<< HEAD
           <Route
             path="/settings"
             element={
@@ -247,6 +368,60 @@ function App() {
         </Routes>
       </DefaultLayout>
     </BalanceProvider>
+=======
+        <Route
+          path="/settings"
+          element={
+            <>
+              <Settings />
+            </>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <>
+              <Chart />
+            </>
+          }
+        />
+        <Route
+          path="/ui/alerts"
+          element={
+            <>
+              <Alerts />
+            </>
+          }
+        />
+        <Route
+          path="/ui/buttons"
+          element={
+            <>
+              <Buttons />
+            </>
+          }
+        />
+        <Route
+          path="/auth/signin"
+          element={
+            <>
+              <SignIn />
+            </>
+          }
+        />
+        <Route
+          path="/auth/signup"
+          element={
+            <>
+              <SignUp />
+            </>
+          }
+        />
+      </Routes>
+      <Toaster position="top-right" />
+
+    </DefaultLayout>
+>>>>>>> 7921d045656ecfa74e501013fa3d0565efc129c4
   );
 }
 

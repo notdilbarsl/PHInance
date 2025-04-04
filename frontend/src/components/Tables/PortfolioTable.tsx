@@ -16,7 +16,6 @@ type STOCK = {
   returns: number;
   returnsPct: string;
   currentValue: number;
-  graphUrl: string;
   history: StockHistory[];
 };
 
@@ -39,7 +38,6 @@ const stocks: STOCK[] = [
     returns: 498.96,
     returnsPct: "11.08%",
     currentValue: 5002.2,
-    graphUrl: "/graphs/zomato.png",
     history: [
       { date: "2024-01-15", qty: 10, rate: 200, amount: 2000 },
       { date: "2024-02-10", qty: 5, rate: 220, amount: 1100 },
@@ -53,7 +51,6 @@ const stocks: STOCK[] = [
     returns: -292.35,
     returnsPct: "-11.35%",
     currentValue: 2282.85,
-    graphUrl: "/graphs/sbi.png",
     history: [
       { date: "2023-12-20", qty: 1, rate: 850, amount: 850 },
       { date: "2024-01-10", qty: 2, rate: 870, amount: 1740 },
@@ -66,7 +63,6 @@ const stocks: STOCK[] = [
     returns: -288.96,
     returnsPct: "-21.51%",
     currentValue: 1054.56,
-    graphUrl: "/graphs/tata_steel.png",
     history: [
       { date: "2023-11-05", qty: 4, rate: 160, amount: 640 },
       { date: "2023-12-18", qty: 4, rate: 175, amount: 700 },
@@ -79,7 +75,6 @@ const stocks: STOCK[] = [
     returns: 300.5,
     returnsPct: "15.23%",
     currentValue: 864.4,
-    graphUrl: "/graphs/apple.png",
     history: [
       { date: "2024-01-12", qty: 2, rate: 150, amount: 300 },
       { date: "2024-02-20", qty: 3, rate: 160, amount: 480 },
@@ -92,7 +87,6 @@ const stocks: STOCK[] = [
     returns: 250.76,
     returnsPct: "18.04%",
     currentValue: 521.68,
-    graphUrl: "/graphs/google.png",
     history: [
       { date: "2024-01-10", qty: 2, rate: 110, amount: 220 },
       { date: "2024-03-01", qty: 2, rate: 120, amount: 240 },
@@ -105,7 +99,6 @@ const stocks: STOCK[] = [
     returns: 1200.34,
     returnsPct: "10.5%",
     currentValue: 14403.3,
-    graphUrl: "/graphs/reliance.png",
     history: [
       { date: "2024-01-18", qty: 3, rate: 2200, amount: 6600 },
       { date: "2024-02-25", qty: 3, rate: 2300, amount: 6900 },
@@ -118,7 +111,6 @@ const stocks: STOCK[] = [
     returns: 900.75,
     returnsPct: "12.8%",
     currentValue: 11201.75,
-    graphUrl: "/graphs/hdfc_bank.png",
     history: [
       { date: "2024-01-14", qty: 4, rate: 1500, amount: 6000 },
       { date: "2024-02-28", qty: 3, rate: 1550, amount: 4650 },
@@ -175,7 +167,6 @@ export default function PortfolioDashboard() {
             <thead>
               <tr className="border-b bg-gray-100">
                 <th className="px-6 py-4">COMPANY</th>
-                <th className="px-6 py-4">GRAPH</th>
                 <th className="px-6 py-4">MARKET PRICE</th>
                 <th className="px-6 py-4">RETURNS (%)</th>
                 <th className="px-6 py-4">CURRENT</th>
@@ -202,9 +193,6 @@ export default function PortfolioDashboard() {
                             {openStock === stock.name ? "▲" : "▼"}
                           </button>
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <img src={stock.graphUrl} alt={`${stock.name} trend`} className="w-40 h-14 object-contain" />
                       </td>
                       <td className="px-6 py-4 text-lg">₹{stock.marketPrice.toFixed(2)}</td>
                       <td className={`px-6 py-4 font-semibold text-lg ${stock.returns >= 0 ? "text-green-500" : "text-red-500"}`}>

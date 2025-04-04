@@ -1,11 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../../config.ts";
+import toast from 'react-hot-toast';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,6 +18,7 @@ const SignIn: React.FC = () => {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
 
@@ -32,26 +32,25 @@ const SignIn: React.FC = () => {
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
+      console.log(data)
+      if (!response.ok || !data.token) {
         throw new Error(data.message || 'Login failed');
       }
 
       if (data.token) {
         localStorage.setItem('authToken', data.token);
-        localStorage.setItem('name', data.name);  // Store the user's name globally
-        navigate('/'); // Redirect to dashboard
+        localStorage.setItem('name', data.name);
+
+        toast.success(`Welcome back, ${data.name}!`);
+        navigate('/');
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || 'An error occurred during login');
-      } else {
-        setError('An unknown error occurred during login');
-      }
+      const message = err instanceof Error ? err.message : 'An unknown error occurred';
+      console.log(message)
+      setError(message);
+      toast.error(message);
     }
-  };
-
-
+  }
   return (
     <>
       <Breadcrumb pageName="Sign In" />

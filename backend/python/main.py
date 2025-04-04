@@ -23,4 +23,10 @@ async def get_stock_info(ticker: str):
         return info
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+@app.get("/price/{ticker}")
+async def get_stock_info(ticker: str):
+    try:
+        stock = yf.Ticker(f"{ticker}.NS")
+        return stock.fast_info['lastPrice']
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
