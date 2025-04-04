@@ -39,7 +39,7 @@ const TableFour = () => {
   useEffect(() => {
     const fetchStockData = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("authToken");
         const response = await fetch(`${API_BASE_URL}/user/profile`, {
           method: 'GET',
           headers: {
@@ -110,8 +110,8 @@ const TableFour = () => {
         {varData.map((stock, key) => (
           <div
             className={`grid grid-cols-[2fr_1.5fr_1.2fr_1.5fr_1.5fr] ${key === varData.length - 1
-                ? ''
-                : 'border-b border-stroke dark:border-strokedark'
+              ? ''
+              : 'border-b border-stroke dark:border-strokedark'
               }`}
             key={key}
           >
