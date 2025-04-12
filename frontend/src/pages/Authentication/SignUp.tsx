@@ -176,7 +176,7 @@
                       <input
                         type="tel"
                         pattern="[0-9]{10}"
-                        placeholder="Enter your phone number"
+                        placeholder="Enter you phone number :- 9876543210"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required
