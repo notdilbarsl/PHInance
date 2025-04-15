@@ -27,6 +27,6 @@ func FinRoutes(r *gin.Engine) {
 		user.GET("/behaviour", controllers.BehaviourHandler)
 		user.GET("/dashboard", controllers.DashboardHandler)
 		user.GET("/watchlist/:ticker", controllers.WatchlistHandler)
-
+		user.POST("/addbalance", controllers.AddBalanceHandler)
 	}
 }
