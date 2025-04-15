@@ -231,7 +231,7 @@ const PortfolioDashboard = () => {
                           }`}
                       >
                         {returns >= -0.1 ? "+" : "-"}
-                        ₹{Math.abs(returns).toFixed(2)} ({returnsPct}%)
+                        ₹{Math.abs(returns).toFixed(2)} ({Number(returnsPct)}%)
                       </td>
                       <td className="px-6 py-4 text-lg text-gray-800 dark:text-gray-100">
                         ₹{currentValue.toFixed(2)}
