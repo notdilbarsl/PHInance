@@ -151,118 +151,94 @@ const PortfolioDashboard = () => {
   }
 
   return (
-    <div className="w-full h-screen px-12 py-6 bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center pb-4 border-b">
-          <div>
-            <h2 className="text-4xl font-bold">₹{holdingsSummary.currentValue.toLocaleString()}</h2>
-            <p className="text-gray-500">Current value</p>
-          </div>
+    <div className="mt-4 overflow-x-auto">
+  <table className="w-full border border-gray-300 dark:border-gray-700 text-left text-sm bg-white dark:bg-gray-800">
+    <thead>
+      <tr className="border-b bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+        <th className="px-6 py-4">COMPANY</th>
+        <th className="px-6 py-4">MARKET PRICE</th>
+        <th className="px-6 py-4">RETURNS (%)</th>
+        <th className="px-6 py-4">CURRENT</th>
+      </tr>
+    </thead>
+    <tbody>
+      {stocks.map((stock) => {
+        const livePrice = livePrices[stock.name] || 0;
+        const currentValue = stock.quantity * livePrice;
+        const returns = currentValue - stock.avgPrice * stock.quantity;
+        const returnsPct =
+          stock.avgPrice > 0
+            ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2)
+            : "0.00%";
 
-          <div className="text-center">
-            <h2 className="text-3xl font-semibold">Holdings ({stocks.length})</h2>
-          </div>
+        return (
+          <React.Fragment key={stock.name}>
+            <tr className="border-b dark:border-gray-600">
+              <td className="px-6 py-4 text-gray-800 dark:text-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">{stock.name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      QTY {stock.quantity} • AVG. ₹{stock.avgPrice.toFixed(2)}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => toggleDropdown(stock.name)}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 focus:outline-none"
+                  >
+                    {openStock === stock.name ? "▲" : "▼"}
+                  </button>
+                </div>
+              </td>
+              <td className="px-6 py-4 text-lg text-gray-800 dark:text-gray-100">
+                ₹{livePrice.toFixed(2)}
+              </td>
+              <td
+                className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"
+                  }`}
+              >
+                {returns >= 0 ? "+" : ""}
+                ₹{returns.toFixed(2)} ({returnsPct}%)
+              </td>
+              <td className="px-6 py-4 text-lg text-gray-800 dark:text-gray-100">
+                ₹{currentValue.toFixed(2)}
+              </td>
+            </tr>
 
-          <div className="text-right space-y-2">
-            <p className="text-gray-500">
-              Invested Value{" "}
-              <span className="font-semibold text-black">₹{holdingsSummary.investedValue.toLocaleString()}</span>
-            </p>
-            <p
-              className={`font-semibold ${holdingsSummary.totalReturns >= 0 ? "text-green-500" : "text-red-500"
-                }`}
-            >
-              Total Returns {holdingsSummary.totalReturns >= 0 ? "+" : ""}
-              ₹{holdingsSummary.totalReturns.toLocaleString()} ({holdingsSummary.totalReturnsPct}%)
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full border border-gray-300 text-left text-sm bg-white">
-            <thead>
-              <tr className="border-b bg-gray-100">
-                <th className="px-6 py-4">COMPANY</th>
-                <th className="px-6 py-4">MARKET PRICE</th>
-                <th className="px-6 py-4">RETURNS (%)</th>
-                <th className="px-6 py-4">CURRENT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stocks.map((stock) => {
-                const livePrice = livePrices[stock.name] || 0;
-                const currentValue = stock.quantity * livePrice;
-                const returns = currentValue - stock.avgPrice * stock.quantity;
-                const returnsPct =
-                  stock.avgPrice > 0
-                    ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2)
-                    : "0.00%";
-
-                return (
-                  <React.Fragment key={stock.name}>
-                    <tr className="border-b">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium">{stock.name}</div>
-                            <div className="text-xs text-gray-500">
-                              QTY {stock.quantity} • AVG. ₹{stock.avgPrice.toFixed(2)}
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => toggleDropdown(stock.name)}
-                            className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                          >
-                            {openStock === stock.name ? "▲" : "▼"}
-                          </button>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-lg">₹{livePrice.toFixed(2)}</td>
-                      <td
-                        className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"
-                          }`}
-                      >
-                        {returns >= 0 ? "+" : ""}
-                        ₹{returns.toFixed(2)} ({returnsPct}%)
-                      </td>
-                      <td className="px-6 py-4 text-lg">₹{currentValue.toFixed(2)}</td>
-                    </tr>
-
-                    {openStock === stock.name && (
-                      <tr>
-                        <td colSpan={4} className="px-6 py-3 bg-gray-50">
-                          <h3 className="font-semibold mb-2">HISTORY</h3>
-                          <table className="w-full text-sm">
-                            <thead>
-                              <tr className="border-b">
-                                <th className="px-4 py-2">DATE</th>
-                                <th className="px-4 py-2">QTY</th>
-                                <th className="px-4 py-2">RATE</th>
-                                <th className="px-4 py-2">AMOUNT</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {stock.history.map((entry, index) => (
-                                <tr key={index} className="border-b">
-                                  <td className="px-4 py-2">{entry.date}</td>
-                                  <td className="px-4 py-2">{entry.qty}</td>
-                                  <td className="px-4 py-2">₹{entry.rate}</td>
-                                  <td className="px-4 py-2">₹{entry.amount}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </td>
+            {openStock === stock.name && (
+              <tr>
+                <td colSpan={4} className="px-6 py-3 bg-gray-50 dark:bg-gray-700">
+                  <h3 className="font-semibold mb-2 text-gray-800 dark:text-gray-100">HISTORY</h3>
+                  <table className="w-full text-sm text-gray-800 dark:text-gray-200">
+                    <thead>
+                      <tr className="border-b dark:border-gray-600">
+                        <th className="px-4 py-2">DATE</th>
+                        <th className="px-4 py-2">QTY</th>
+                        <th className="px-4 py-2">RATE</th>
+                        <th className="px-4 py-2">AMOUNT</th>
                       </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+                    </thead>
+                    <tbody>
+                      {stock.history.map((entry, index) => (
+                        <tr key={index} className="border-b dark:border-gray-600">
+                          <td className="px-4 py-2">{entry.date}</td>
+                          <td className="px-4 py-2">{entry.qty}</td>
+                          <td className="px-4 py-2">₹{entry.rate}</td>
+                          <td className="px-4 py-2">₹{entry.amount}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
+
   );
 };
 
