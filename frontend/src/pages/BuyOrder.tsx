@@ -182,10 +182,11 @@ const BuyOrder = () => {
       {/* Buy Order Section */}
       {!loading && !error && (
         <div className="w-1/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+          {/*
           <div className="flex justify-between mb-4">
             <span className="text-lg font-semibold">Your Balance: ₹{userBalance}</span>
           </div>
-
+          */}
           <div className="flex space-x-2 mb-4">
             <button className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`} onClick={() => setTradeType("DELIVERY")}>
               DELIVERY
