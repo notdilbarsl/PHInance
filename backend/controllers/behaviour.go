@@ -10,6 +10,7 @@ import (
 )
 
 // BehaviourHandler calculates last 7 days' investments and sector allocations
+
 func BehaviourHandler(c *gin.Context) {
 	userID, ok := c.Get("user_id")
 	if !ok {
@@ -76,9 +77,13 @@ func BehaviourHandler(c *gin.Context) {
 		}
 	}
 
-	// Calculate sector percentages
+	// Calculate sector percentages safely
 	for sector, value := range sectorAllocation {
-		sectorAllocation[sector] = (value / totalHoldingValue) * 100
+		if totalHoldingValue == 0 {
+			sectorAllocation[sector] = 0
+		} else {
+			sectorAllocation[sector] = (value / totalHoldingValue) * 100
+		}
 	}
 
 	// Construct response
