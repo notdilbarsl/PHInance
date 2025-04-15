@@ -95,7 +95,7 @@ const BuyOrder = () => {
       };
 
       await axios.post(
-        "https://phinance-3.onrender.com/user/transaction",
+        `${API_BASE_URL}/user/transaction`,
         orderData,
         {
           headers: {

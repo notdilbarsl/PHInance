@@ -4,6 +4,7 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import React from 'react';
 import axios from "axios";
 import { useBalance } from "../components/Header/BalanceContext";
+import { API_BASE_URL } from '../config';
 
 const LearningCentre = () => {
   React.useEffect(() => {
@@ -40,7 +41,7 @@ const LearningCentre = () => {
   const awardCoins = async (amount) => {
     const authToken = localStorage.getItem("authToken");
     await axios.post(
-      "https://phinance-3.onrender.com/user/addbalance",
+      `${API_BASE_URL}/user/addbalance`,
       { add: amount },
       { headers: { Authorization: `Bearer ${authToken}` } }
     );
@@ -55,9 +56,9 @@ const LearningCentre = () => {
         videos: [...completedItems.videos, videoId],
         coins: completedItems.coins + 50, // (optional, for local tracking)
       };
-  
+
       setCompletedItems(updatedItems);
-  
+
       try {
         localStorage.setItem('completedLearningItems', JSON.stringify(updatedItems));
         // Add coins to backend and update global balance
@@ -68,7 +69,7 @@ const LearningCentre = () => {
       }
     }
   };
-  
+
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleQuizComplete = (quizId: string, score: number, reward: number): void => {
