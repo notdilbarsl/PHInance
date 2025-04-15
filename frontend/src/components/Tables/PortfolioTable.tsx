@@ -169,11 +169,11 @@ const PortfolioDashboard = () => {
               <span className="font-semibold text-black">₹{holdingsSummary.investedValue.toLocaleString()}</span>
             </p>
             <p
-              className={`font-semibold ${holdingsSummary.totalReturns >= 0 ? "text-green-500" : "text-red-500"
+              className={`font-semibold ${holdingsSummary.totalReturns >= -0.1 ? "text-green-500" : "text-red-500"
                 }`}
             >
-              Total Returns {holdingsSummary.totalReturns >= 0 ? "+" : ""}
-              ₹{holdingsSummary.totalReturns.toLocaleString()} ({holdingsSummary.totalReturnsPct}%)
+              Total Returns {holdingsSummary.totalReturns >= -0.1 ? "+" : "-"}
+              ₹{Math.abs(holdingsSummary.totalReturns).toLocaleString()} ({holdingsSummary.totalReturnsPct}%)
             </p>
           </div>
         </div>
@@ -219,11 +219,11 @@ const PortfolioDashboard = () => {
                       </td>
                       <td className="px-6 py-4 text-lg">₹{livePrice.toFixed(2)}</td>
                       <td
-                        className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"
+                        className={`px-6 py-4 font-semibold text-lg ${returns >= -0.1 ? "text-green-500" : "text-red-500"
                           }`}
                       >
-                        {returns >= 0 ? "+" : ""}
-                        ₹{returns.toFixed(2)} ({returnsPct}%)
+                        {returns >= -0.1 ? "+" : "-"}
+                        ₹{Math.abs(returns).toFixed(2)} ({Number(returnsPct)}%)
                       </td>
                       <td className="px-6 py-4 text-lg">₹{currentValue.toFixed(2)}</td>
                     </tr>
