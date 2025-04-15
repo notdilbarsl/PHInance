@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, CategoryScale, LineController, BarController, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { API_BASE_URL } from "../config";
 import { Chart } from "react-chartjs-2";
 import { useBalance } from "../components/Header/BalanceContext";
 
 // Register required chart.js components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, LineController, BarController, BarElement, Title, Tooltip, Legend);
 
 const BuyOrder = () => {
   const { stockName } = useParams<{ stockName: string }>();
@@ -66,13 +66,13 @@ const BuyOrder = () => {
       const response = await axios.get(`${API_BASE_URL}/user/data/${symbol}/30`);
       const priceData = response.data.datasets[0].values;
       const volumeData = response.data.datasets[1].values;
-      
+
       const formattedData = priceData.map((item: any, index: number) => ({
         date: item[0],
         price: parseFloat(item[1]),
         volume: volumeData[index] ? volumeData[index][1] : 0,
       }));
-      
+
       setChartData(formattedData);
     } catch (err) {
       console.error("Error fetching chart data:", err);
@@ -86,14 +86,14 @@ const BuyOrder = () => {
         alert("User not authenticated. Please sign in.");
         return;
       }
-  
+
       const orderData = {
         curr_price: limitPrice,
         ticker: stockName,
         quantity: parseInt(shares, 10),
         type: "BUY",
       };
-  
+
       await axios.post(
         "https://phinance-3.onrender.com/user/transaction",
         orderData,
@@ -104,22 +104,22 @@ const BuyOrder = () => {
           },
         }
       );
-  
+
       alert("Order placed successfully!");
-  
+
       // Update balance in context after successful transaction
       updateBalance();
-  
+
     } catch (error: unknown) {
       console.error("Error placing buy order:", error);
-    
+
       if (axios.isAxiosError(error)) {
         alert(`Error placing buy order: ${error.response?.data?.message || "Unknown error"}`);
       } else {
         alert("An unexpected error occurred.");
       }
     }
-  };  
+  };
 
   // Chart.js Data & Options
   const combinedChartData = {
@@ -144,7 +144,7 @@ const BuyOrder = () => {
       },
     ],
   };
-  
+
   const chartOptions = {
     responsive: true,
     scales: {
@@ -172,53 +172,53 @@ const BuyOrder = () => {
 
   return (
     <>
-    <div className="flex w-full p-5">
-      {/* Graphs Section */}
-      <div className="w-2/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-3">Stock Price & Volume</h2>
-        <Chart type="bar" data={combinedChartData} options={chartOptions} />
-      </div>
-      
-      {/* Buy Order Section */}
-      {!loading && !error && (
-        <div className="w-1/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
-          {/*
+      <div className="flex w-full p-5">
+        {/* Graphs Section */}
+        <div className="w-2/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold mb-3">Stock Price & Volume</h2>
+          <Chart type="bar" data={combinedChartData} options={chartOptions} />
+        </div>
+
+        {/* Buy Order Section */}
+        {!loading && !error && (
+          <div className="w-1/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+            {/*
           <div className="flex justify-between mb-4">
             <span className="text-lg font-semibold">Your Balance: ₹{userBalance}</span>
           </div>
           */}
 
-          <div className="flex space-x-2 mb-4">
-            <button className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`} onClick={() => setTradeType("DELIVERY")}>
-              DELIVERY
+            <div className="flex space-x-2 mb-4">
+              <button className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`} onClick={() => setTradeType("DELIVERY")}>
+                DELIVERY
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700 dark:text-white font-medium">No. of Shares</label>
+              <input type="number" className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" value={shares} onChange={(e) => setShares(e.target.value)} />
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700 dark:text-white font-medium">Current Price</label>
+              <input type="number" value={limitPrice} readOnly onChange={(e) => setLimitPrice(parseFloat(e.target.value))} className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" />
+            </div>
+
+            {shares && (
+              <div className="mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded-md">
+                <p className="text-gray-700 dark:text-gray-300">Total Cost: ₹{(parseInt(shares, 10) * limitPrice).toFixed(2)}</p>
+              </div>
+            )}
+
+            <button
+              onClick={handleBuyOrder}
+              className="w-full py-3 bg-green-600 text-white font-semibold rounded-md"
+            >
+              PLACE BUY ORDER
             </button>
           </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 dark:text-white font-medium">No. of Shares</label>
-            <input type="number" className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" value={shares} onChange={(e) => setShares(e.target.value)} />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 dark:text-white font-medium">Current Price</label>
-            <input type="number" value={limitPrice} readOnly onChange={(e) => setLimitPrice(parseFloat(e.target.value))} className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" />
-          </div>
-
-          {shares && (
-            <div className="mb-4 p-2 bg-gray-100 dark:bg-gray-800 rounded-md">
-              <p className="text-gray-700 dark:text-gray-300">Total Cost: ₹{(parseInt(shares, 10) * limitPrice).toFixed(2)}</p>
-            </div>
-          )}
-
-          <button 
-            onClick={handleBuyOrder} 
-            className="w-full py-3 bg-green-600 text-white font-semibold rounded-md"
-          >
-            PLACE BUY ORDER
-          </button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
 
       {!loading && !error && (
         <div className="w-full mt-5 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
