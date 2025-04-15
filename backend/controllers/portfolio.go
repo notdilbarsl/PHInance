@@ -18,6 +18,11 @@ func PortfolioHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "Server Error"})
 		return
 	}
-	c.JSON(http.StatusOK, stocks)
+	var transactions []models.Transaction
+	if tx := phiDb.Find(&transactions, "user_id = ?", user_id); tx.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{ERROR: "Server Error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"transactions": transactions, "stocks": stocks})
 	return
 }
