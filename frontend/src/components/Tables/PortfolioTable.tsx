@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from "react";
 import { API_BASE_URL } from "../../config";
 import Header from "../Header";
@@ -25,7 +24,7 @@ const PortfolioDashboard = () => {
   const [stocks, setStocks] = useState<STOCK[]>([]);
   const [livePrices, setLivePrices] = useState<{ [key: string]: number }>({});
   const [openStock, setOpenStock] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // loading state added ✅
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPort = async () => {
@@ -71,11 +70,11 @@ const PortfolioDashboard = () => {
         });
 
         setStocks(updatedStocks);
-        await fetchStockPrices(updatedStocks); // wait for all stock price API calls ✅
+        await fetchStockPrices(updatedStocks);
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
-        setLoading(false); // only stop loading after everything is fetched ✅
+        setLoading(false);
       }
     };
 
@@ -101,7 +100,7 @@ const PortfolioDashboard = () => {
       }
     });
 
-    await Promise.all(fetches); // wait for all fetches to complete ✅
+    await Promise.all(fetches);
     setLivePrices(newStockData);
   };
 
@@ -141,35 +140,42 @@ const PortfolioDashboard = () => {
     setOpenStock(openStock === stockName ? null : stockName);
   };
 
-  // ✅ Show loading spinner until everything is fetched
   if (loading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-gray-500 text-xl">Loading portfolio...</div>
+      <div className="w-full h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+        <div className="text-gray-500 dark:text-gray-300 text-xl">Loading portfolio...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen px-12 py-6 bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center pb-4 border-b">
+    <div className="w-full min-h-screen px-12 py-6 bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <div className="flex justify-between items-center pb-4 border-b dark:border-gray-700">
           <div>
-            <h2 className="text-4xl font-bold">₹{holdingsSummary.currentValue.toLocaleString()}</h2>
-            <p className="text-gray-500">Current value</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-white">
+              ₹{holdingsSummary.currentValue.toLocaleString()}
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400">Current value</p>
           </div>
 
           <div className="text-center">
-            <h2 className="text-3xl font-semibold">Holdings ({stocks.length})</h2>
+            <h2 className="text-3xl font-semibold text-gray-800 dark:text-white">
+              Holdings ({stocks.length})
+            </h2>
           </div>
 
           <div className="text-right space-y-2">
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Invested Value{" "}
-              <span className="font-semibold text-black">₹{holdingsSummary.investedValue.toLocaleString()}</span>
+              <span className="font-semibold text-black dark:text-white">
+                ₹{holdingsSummary.investedValue.toLocaleString()}
+              </span>
             </p>
             <p
-              className={`font-semibold ${holdingsSummary.totalReturns >= -0.1 ? "text-green-500" : "text-red-500"
+              className={`font-semibold ${holdingsSummary.totalReturns >= -0.1
+                ? "text-green-500"
+                : "text-red-500"
                 }`}
             >
               Total Returns {holdingsSummary.totalReturns >= -0.1 ? "+" : "-"}
@@ -179,9 +185,9 @@ const PortfolioDashboard = () => {
         </div>
 
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full border border-gray-300 text-left text-sm bg-white">
+          <table className="w-full border border-gray-300 dark:border-gray-700 text-left text-sm bg-white dark:bg-gray-800">
             <thead>
-              <tr className="border-b bg-gray-100">
+              <tr className="border-b bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
                 <th className="px-6 py-4">COMPANY</th>
                 <th className="px-6 py-4">MARKET PRICE</th>
                 <th className="px-6 py-4">RETURNS (%)</th>
@@ -196,45 +202,49 @@ const PortfolioDashboard = () => {
                 const returnsPct =
                   stock.avgPrice > 0
                     ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2)
-                    : "0.00%";
+                    : "0.00";
 
                 return (
                   <React.Fragment key={stock.name}>
-                    <tr className="border-b">
-                      <td className="px-6 py-4">
+                    <tr className="border-b dark:border-gray-600">
+                      <td className="px-6 py-4 text-gray-800 dark:text-gray-100">
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="font-medium">{stock.name}</div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                               QTY {stock.quantity} • AVG. ₹{stock.avgPrice.toFixed(2)}
                             </div>
                           </div>
                           <button
                             onClick={() => toggleDropdown(stock.name)}
-                            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                            className="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100 focus:outline-none"
                           >
                             {openStock === stock.name ? "▲" : "▼"}
                           </button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-lg">₹{livePrice.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-lg text-gray-800 dark:text-gray-100">
+                        ₹{livePrice.toFixed(2)}
+                      </td>
                       <td
                         className={`px-6 py-4 font-semibold text-lg ${returns >= -0.1 ? "text-green-500" : "text-red-500"
                           }`}
                       >
                         {returns >= -0.1 ? "+" : "-"}
-                        ₹{Math.abs(returns).toFixed(2)} ({Number(returnsPct)}%)
+                        ₹{Math.abs(returns).toFixed(2)} ({returnsPct}%)
                       </td>
-                      <td className="px-6 py-4 text-lg">₹{currentValue.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-lg text-gray-800 dark:text-gray-100">
+                        ₹{currentValue.toFixed(2)}
+                      </td>
                     </tr>
 
                     {openStock === stock.name && (
                       <tr>
-                        <td colSpan={4} className="px-6 py-3 bg-gray-50">
-                          <h3 className="font-semibold mb-2">HISTORY</h3>
-                          <table className="w-full text-sm">
+                        <td colSpan={4} className="px-6 py-3 bg-gray-50 dark:bg-gray-700">
+                          <h3 className="font-semibold mb-2 text-gray-800 dark:text-gray-100">HISTORY</h3>
+                          <table className="w-full text-sm text-gray-800 dark:text-gray-200">
                             <thead>
-                              <tr className="border-b">
+                              <tr className="border-b dark:border-gray-600">
                                 <th className="px-4 py-2">DATE</th>
                                 <th className="px-4 py-2">QTY</th>
                                 <th className="px-4 py-2">RATE</th>
@@ -243,7 +253,7 @@ const PortfolioDashboard = () => {
                             </thead>
                             <tbody>
                               {stock.history.map((entry, index) => (
-                                <tr key={index} className="border-b">
+                                <tr key={index} className="border-b dark:border-gray-600">
                                   <td className="px-4 py-2">{entry.date}</td>
                                   <td className="px-4 py-2">{entry.qty}</td>
                                   <td className="px-4 py-2">₹{entry.rate}</td>
@@ -267,4 +277,3 @@ const PortfolioDashboard = () => {
 };
 
 export default PortfolioDashboard;
-
