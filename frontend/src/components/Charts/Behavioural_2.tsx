@@ -6,7 +6,7 @@ const ProfitLossChart: React.FC = () => {
   const [series, setSeries] = useState([
     {
       name: 'Profit/Loss ($)',
-      data: [200, -150, 300, 400, -100, 250, -50], // Sample profit/loss values
+      data: [0, 0, 0, 0, 0, 0, 0], // Sample profit/loss values
     },
   ]);
 
@@ -27,7 +27,7 @@ const ProfitLossChart: React.FC = () => {
       width: 3,
     },
     xaxis: {
-      categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      categories: ['Wed', 'Thu', 'Fri', 'Sat', 'Sun','Mon', 'Tue'],
     },
     yaxis: {
       title: { text: 'Profit/Loss ($)' },
