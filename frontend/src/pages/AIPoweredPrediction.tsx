@@ -98,6 +98,7 @@ const AIPoweredPrediction = () => {
               Graph
             </h5>
           </div>
+          
           */}
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base text-black dark:text-white">

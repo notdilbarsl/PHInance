@@ -182,9 +182,11 @@ const BuyOrder = () => {
       {/* Buy Order Section */}
       {!loading && !error && (
         <div className="w-1/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
+          {/*
           <div className="flex justify-between mb-4">
             <span className="text-lg font-semibold">Your Balance: ₹{userBalance}</span>
           </div>
+          */}
 
           <div className="flex space-x-2 mb-4">
             <button className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-700"}`} onClick={() => setTradeType("DELIVERY")}>
@@ -199,7 +201,7 @@ const BuyOrder = () => {
 
           <div className="mb-4">
             <label className="block text-gray-700 dark:text-white font-medium">Current Price</label>
-            <input type="number" value={limitPrice} onChange={(e) => setLimitPrice(parseFloat(e.target.value))} className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" />
+            <input type="number" value={limitPrice} readOnly onChange={(e) => setLimitPrice(parseFloat(e.target.value))} className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500" />
           </div>
 
           {shares && (
