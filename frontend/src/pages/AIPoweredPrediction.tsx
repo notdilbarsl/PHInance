@@ -97,11 +97,13 @@ const AIPoweredPrediction = () => {
               Stock
             </h5>
           </div>
+          {/*
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base text-black dark:text-white">
               Graph
             </h5>
           </div>
+          */}
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base text-black dark:text-white">
               Last Closing Price (₹)
@@ -148,11 +150,11 @@ const AIPoweredPrediction = () => {
               <p className="text-black dark:text-white font-semibold">{stock.name}</p>
             </div>
 
-            {/* Placeholder Graph */}
+            {/* Placeholder Graph .
             <div className="flex items-center justify-center p-2.5 xl:p-5">
               <div className="w-12 h-6 bg-gray-300 dark:bg-gray-600 rounded-sm"></div>
             </div>
-
+              */}
             {/* Current Closing Price */}
             <div className="flex items-center justify-center p-2.5 xl:p-5">
               <p className="text-black dark:text-white">
@@ -214,12 +216,14 @@ const AIPoweredPrediction = () => {
       </div>
 
       {/* Refresh Button */}
-      <button
+      
+      {/* <button
         onClick={fetchStockPredictions}
         className="mt-6 mb-10 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 dark:bg-blue-500 dark:hover:bg-blue-400"
       >
         Refresh Predictions
       </button>
+      */}
     </div>
   );
 };
