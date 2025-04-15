@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import profilePic from '../images/user/user-06.png';
 import { API_BASE_URL } from '../config';
@@ -31,20 +31,35 @@ const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const navigate = useNavigate();
 
-  React.useEffect(() => {
+  // Logout functionality
+  const handleLogout = () => {
+    // Clear localStorage
+    localStorage.clear();
+
+    // Clear all cookies
+    document.cookie.split(";").forEach(cookie => {
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    });
+
+    // Redirect to sign-in page
+    navigate('/auth/signin');
+  };
+
+  useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      window.location.href = "/auth/signin";
+      navigate('/auth/signin'); // use navigate here too
     }
-  }, []);
-
-
+  }, [navigate]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("authToken") // Assuming token is stored here
+        const token = localStorage.getItem("authToken");
         const response = await fetch(`${API_BASE_URL}/user/profile`, {
           method: 'GET',
           headers: {
@@ -91,8 +106,14 @@ const Profile = () => {
             </div>
             <nav className="mt-6">
               <ul className="space-y-3">
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Change Password</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Logout</Link></li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left p-2 rounded hover:bg-gray-800"
+                  >
+                    Logout
+                  </button>
+                </li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Permanently Delete Account</Link></li>
               </ul>
             </nav>
@@ -111,9 +132,6 @@ const Profile = () => {
               <h3 className="text-lg font-semibold border-b pb-2">Balance</h3>
               <p className="text-xl font-bold text-green-600">₹{user.balance.toLocaleString()}</p>
             </div>
-
-
-
 
             <div className="mt-6">
               <div className="flex justify-between border-b pb-2">
@@ -144,13 +162,10 @@ const Profile = () => {
                 <Link to="/transactions" className="text-blue-500 text-sm">View All</Link>
               </div>
               <div className="mt-4 space-y-3">
-                {transactions.map((tx) => (
-                  <div key={tx.ticker} className="flex justify-between p-4 bg-gray-100 rounded-lg">
+                {transactions.map((tx, index) => (
+                  <div key={`${tx.ticker}-${index}`} className="flex justify-between p-4 bg-gray-100 rounded-lg">
                     <p className="text-md font-medium"><strong>{tx.ticker}</strong></p>
-                    <p
-                      className={`text-md font-medium ${tx.type === "BUY" ? "text-green-500" : tx.type === "SELL" ? "text-red-500" : ""
-                        }`}
-                    >
+                    <p className={`text-md font-medium ${tx.type === "BUY" ? "text-green-500" : tx.type === "SELL" ? "text-red-500" : ""}`}>
                       {tx.type}
                     </p>
                     <p className="text-md font-medium">Quantity: {tx.quantity}</p>

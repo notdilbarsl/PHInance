@@ -586,6 +586,9 @@ const QuizPage = () => {
 
       localStorage.setItem('completedLearningItems', JSON.stringify(completedItems));
       localStorage.setItem('learningCoins', completedItems.coins.toString());
+      if ((window as any).handleLearningQuizComplete && quizId) {
+        (window as any).handleLearningQuizComplete(quizId, calculatedScore, calculatedCoins);
+      }
     } catch (error) {
       console.error('Failed to save quiz results:', error);
     }

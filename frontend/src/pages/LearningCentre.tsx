@@ -72,7 +72,7 @@ const LearningCentre = () => {
 
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleQuizComplete = (quizId: string, score: number, reward: number): void => {
+  const handleQuizComplete = async (quizId: string, score: number, reward: number): Promise<void> => {
     setCompletedItems((prevCompletedItems) => ({
       ...prevCompletedItems,
       quizzes: [...prevCompletedItems.quizzes, quizId],
@@ -82,6 +82,22 @@ const LearningCentre = () => {
         [quizId]: { score, earnedCoins: reward }
       }
     }));
+    try {
+      const updatedItems = {
+        ...completedItems,
+        quizzes: [...completedItems.quizzes, quizId],
+        coins: completedItems.coins + reward,
+        quizScores: {
+          ...completedItems.quizScores,
+          [quizId]: { score, earnedCoins: reward }
+        }
+      };
+      localStorage.setItem('completedLearningItems', JSON.stringify(updatedItems));
+      await awardCoins(reward);
+      console.log(`Quiz ${quizId} completed! +${reward} coins awarded.`);
+    } catch (error) {
+      console.error('Failed to save quiz progress or update balance:', error);
+    }
   };
 
   // Make the handleQuizComplete function available to other components

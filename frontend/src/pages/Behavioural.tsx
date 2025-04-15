@@ -30,9 +30,11 @@ const Behavioral = () => {
       <div className="flex flex-col gap-10">
         <ProfitLossChart />
       </div>
+      {/*
       <div className="flex flex-col gap-10">
         <TradeCategoryChart />
       </div>
+      */}
 
 
     </>
