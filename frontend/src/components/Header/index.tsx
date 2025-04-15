@@ -50,7 +50,7 @@ const Header = (props: {
         {/* Center - Φ Balance Display */}
         <div className="hidden lg:flex items-center justify-center">
           <span className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 text-black dark:text-white font-semibold text-sm shadow hover:shadow-md transition duration-200 ease-in-out">
-            Φ {balance}
+            Φ {balance.toFixed(2)}
           </span>
         </div>
 
