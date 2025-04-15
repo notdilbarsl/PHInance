@@ -1,8 +1,8 @@
+
 import React, { useEffect, useState, useMemo } from "react";
 import { API_BASE_URL } from "../../config";
 import Header from "../Header";
 
-// Define Stock Purchase History Data Type
 type StockHistory = {
   date: string;
   qty: number;
@@ -10,7 +10,6 @@ type StockHistory = {
   amount: number;
 };
 
-// Define Main Stock Data Type
 type STOCK = {
   name: string;
   quantity: number;
@@ -22,93 +21,90 @@ type STOCK = {
   history: StockHistory[];
 };
 
-// Portfolio Summary Data
 const PortfolioDashboard = () => {
   const [stocks, setStocks] = useState<STOCK[]>([]);
   const [livePrices, setLivePrices] = useState<{ [key: string]: number }>({});
-  const [openStock, setOpenStock] = useState<string | null>(null); // State for tracking dropdown visibility
+  const [openStock, setOpenStock] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // loading state added ✅
 
-  // Fetch Portfolio Data
   useEffect(() => {
     const fetchPort = async () => {
-      const resp = await fetch(`${API_BASE_URL}/user/portfolio`, {
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+      try {
+        const resp = await fetch(`${API_BASE_URL}/user/portfolio`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+
+        if (!resp.ok) {
+          console.error("Failed to fetch portfolio data");
+          setLoading(false);
+          return;
         }
-      });
 
-      if (!resp.ok) {
-        console.error("Failed to fetch portfolio data");
-        return;
+        const portfolioData = await resp.json();
+
+        const updatedStocks: STOCK[] = portfolioData.stocks.map((stock: any) => {
+          const stockTransactions = portfolioData.transactions.filter(
+            (transaction: any) => transaction.ticker_id === stock.ticker_id
+          );
+
+          const history: StockHistory[] = stockTransactions.map((transaction: any) => ({
+            date: new Date(transaction.CreatedAt).toISOString().split("T")[0],
+            qty: transaction.quantity,
+            rate: transaction.price,
+            amount: transaction.quantity * transaction.price,
+          }));
+
+          const avgPrice = calculateAvgPrice(history);
+
+          return {
+            name: stock.ticker_id,
+            quantity: stock.quantity,
+            avgPrice,
+            marketPrice: 0,
+            returns: 0,
+            returnsPct: "0%",
+            currentValue: 0,
+            history,
+          };
+        });
+
+        setStocks(updatedStocks);
+        await fetchStockPrices(updatedStocks); // wait for all stock price API calls ✅
+      } catch (error) {
+        console.error("Error fetching data", error);
+      } finally {
+        setLoading(false); // only stop loading after everything is fetched ✅
       }
-
-      const portfolioData = await resp.json();
-
-      // Map API response to the required format
-      const updatedStocks: STOCK[] = portfolioData.stocks.map((stock: any) => {
-        const stockTransactions = portfolioData.transactions.filter(
-          (transaction: any) => transaction.ticker_id === stock.ticker_id
-        );
-
-        const history: StockHistory[] = stockTransactions.map((transaction: any) => ({
-          date: new Date(transaction.CreatedAt).toISOString().split("T")[0],
-          qty: transaction.quantity,
-          rate: transaction.price,
-          amount: transaction.quantity * transaction.price,
-        }));
-
-        const avgPrice = calculateAvgPrice(history);
-
-        return {
-          name: stock.ticker_id,
-          quantity: stock.quantity,
-          avgPrice: avgPrice,
-          marketPrice: 0, // Initially set to 0, will update later with live data
-          returns: 0, // Placeholder for now, will calculate later
-          returnsPct: "0%", // Placeholder for now, will calculate later
-          currentValue: 0, // Placeholder for now, will calculate later
-          history,
-        };
-      });
-
-      // Update state with fetched data
-      setStocks(updatedStocks);
-      fetchStockPrices(updatedStocks);
     };
 
     fetchPort();
   }, []);
 
-  // Calculate Average Price from History
   const calculateAvgPrice = (history: StockHistory[]): number => {
     const totalAmount = history.reduce((sum, entry) => sum + entry.amount, 0);
     const totalQuantity = history.reduce((sum, entry) => sum + entry.qty, 0);
     return totalQuantity > 0 ? totalAmount / totalQuantity : 0;
   };
 
-  // Fetch Live Stock Prices
   const fetchStockPrices = async (stocks: STOCK[]) => {
-    try {
-      const newStockData: { [key: string]: number } = {};
+    const newStockData: { [key: string]: number } = {};
 
-      const fetches = stocks.map(async (stock) => {
-        try {
-          const resp = await fetch(`https://yfinance-bcyb.onrender.com/price/${stock.name}`);
-          const data = await resp.text();
-          newStockData[stock.name] = parseFloat(data);
-        } catch {
-          newStockData[stock.name] = 0; // Default to 0 if error fetching price
-        }
-      });
+    const fetches = stocks.map(async (stock) => {
+      try {
+        const resp = await fetch(`https://yfinance-bcyb.onrender.com/price/${stock.name}`);
+        const data = await resp.text();
+        newStockData[stock.name] = parseFloat(data);
+      } catch {
+        newStockData[stock.name] = 0;
+      }
+    });
 
-      await Promise.all(fetches);
-      setLivePrices(newStockData);
-    } catch (error) {
-      console.error("Failed to fetch stock prices");
-    }
+    await Promise.all(fetches); // wait for all fetches to complete ✅
+    setLivePrices(newStockData);
   };
 
-  // Calculate Holdings Summary Dynamically
   const holdingsSummary = useMemo(() => {
     const summary = stocks.reduce(
       (summary, stock) => {
@@ -128,8 +124,8 @@ const PortfolioDashboard = () => {
         currentValue: 0,
         totalReturns: 0,
         totalReturnsPct: 0,
-        oneDayReturns: 0, // Placeholder for now
-        oneDayReturnsPct: 0, // Placeholder for now
+        oneDayReturns: 0,
+        oneDayReturnsPct: 0,
       }
     );
 
@@ -141,16 +137,22 @@ const PortfolioDashboard = () => {
     return summary;
   }, [stocks, livePrices]);
 
-  // Toggle dropdown visibility for stock history
   const toggleDropdown = (stockName: string) => {
     setOpenStock(openStock === stockName ? null : stockName);
   };
 
-  // Return JSX with the dynamic portfolio values
+  // ✅ Show loading spinner until everything is fetched
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="text-gray-500 text-xl">Loading portfolio...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-screen px-12 py-6 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-md">
-        {/* Holdings Summary Section */}
         <div className="flex justify-between items-center pb-4 border-b">
           <div>
             <h2 className="text-4xl font-bold">₹{holdingsSummary.currentValue.toLocaleString()}</h2>
@@ -163,16 +165,19 @@ const PortfolioDashboard = () => {
 
           <div className="text-right space-y-2">
             <p className="text-gray-500">
-              Invested Value <span className="font-semibold text-black">₹{holdingsSummary.investedValue.toLocaleString()}</span>
+              Invested Value{" "}
+              <span className="font-semibold text-black">₹{holdingsSummary.investedValue.toLocaleString()}</span>
             </p>
-            <p className={`font-semibold ${holdingsSummary.totalReturns >= 0 ? "text-green-500" : "text-red-500"}`}>
+            <p
+              className={`font-semibold ${holdingsSummary.totalReturns >= 0 ? "text-green-500" : "text-red-500"
+                }`}
+            >
               Total Returns {holdingsSummary.totalReturns >= 0 ? "+" : ""}
               ₹{holdingsSummary.totalReturns.toLocaleString()} ({holdingsSummary.totalReturnsPct}%)
             </p>
           </div>
         </div>
 
-        {/* Stock Holdings Table */}
         <div className="mt-4 overflow-x-auto">
           <table className="w-full border border-gray-300 text-left text-sm bg-white">
             <thead>
@@ -188,7 +193,10 @@ const PortfolioDashboard = () => {
                 const livePrice = livePrices[stock.name] || 0;
                 const currentValue = stock.quantity * livePrice;
                 const returns = currentValue - stock.avgPrice * stock.quantity;
-                const returnsPct = stock.avgPrice > 0 ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2) : "0.00%";
+                const returnsPct =
+                  stock.avgPrice > 0
+                    ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2)
+                    : "0.00%";
 
                 return (
                   <React.Fragment key={stock.name}>
@@ -210,14 +218,16 @@ const PortfolioDashboard = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-lg">₹{livePrice.toFixed(2)}</td>
-                      <td className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"}`}>
+                      <td
+                        className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"
+                          }`}
+                      >
                         {returns >= 0 ? "+" : ""}
                         ₹{returns.toFixed(2)} ({returnsPct}%)
                       </td>
                       <td className="px-6 py-4 text-lg">₹{currentValue.toFixed(2)}</td>
                     </tr>
 
-                    {/* Stock History Dropdown */}
                     {openStock === stock.name && (
                       <tr>
                         <td colSpan={4} className="px-6 py-3 bg-gray-50">
@@ -257,3 +267,4 @@ const PortfolioDashboard = () => {
 };
 
 export default PortfolioDashboard;
+
