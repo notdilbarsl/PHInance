@@ -68,13 +68,13 @@ const SellOrder = () => {
       const response = await axios.get(`${API_BASE_URL}/user/data/${symbol}/30`);
       const priceData = response.data.datasets[0].values;
       const volumeData = response.data.datasets[1].values;
-      
+
       const formattedData = priceData.map((item: any, index: number) => ({
         date: item[0],
         price: parseFloat(item[1]),
         volume: volumeData[index] ? volumeData[index][1] : 0,
       }));
-      
+
       setChartData(formattedData);
     } catch (err) {
       console.error("Error fetching chart data:", err);
@@ -98,7 +98,7 @@ const SellOrder = () => {
       };
 
       await axios.post(
-        "https://phinance-3.onrender.com/user/transaction",
+        `${API_BASE_URL}/user/transaction`,
         orderData,
         {
           headers: {
@@ -176,9 +176,8 @@ const SellOrder = () => {
           <div className="w-1/3 p-5 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
             <div className="flex space-x-2 mb-4">
               <button
-                className={`flex-1 py-2 rounded-md font-semibold ${
-                  tradeType === "DELIVERY" ? "bg-red-400 text-white" : "bg-gray-200 text-gray-700"
-                }`}
+                className={`flex-1 py-2 rounded-md font-semibold ${tradeType === "DELIVERY" ? "bg-red-400 text-white" : "bg-gray-200 text-gray-700"
+                  }`}
                 onClick={() => setTradeType("DELIVERY")}
               >
                 DELIVERY
@@ -221,14 +220,14 @@ const SellOrder = () => {
           <div className="grid grid-cols-3 gap-4 mt-5">
             {stockData &&
               [
-                "previousClose", "open", "dayLow", "dayHigh", "marketCap", "volume", 
-                "dividendYield", "bookValue", "priceToBook", 
-                "earningsQuarterlyGrowth", "netIncomeToCommon", 
-                "trailingEps", "forwardEps", 
-                "targetHighPrice", 
-                "targetLowPrice", 
-                "targetMeanPrice", 
-                "totalRevenue", 
+                "previousClose", "open", "dayLow", "dayHigh", "marketCap", "volume",
+                "dividendYield", "bookValue", "priceToBook",
+                "earningsQuarterlyGrowth", "netIncomeToCommon",
+                "trailingEps", "forwardEps",
+                "targetHighPrice",
+                "targetLowPrice",
+                "targetMeanPrice",
+                "totalRevenue",
                 "profitMargins"
               ].map((key) => (
                 <div key={key} className="p-3 bg-white dark:bg-gray-900 rounded-md shadow">
