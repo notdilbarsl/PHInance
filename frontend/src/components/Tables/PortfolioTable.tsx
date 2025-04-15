@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+import Header from "../Header";
 
 // Define Stock Purchase History Data Type
 type StockHistory = {
@@ -128,6 +130,56 @@ const calculateAvgPrice = (history: StockHistory[]): number => {
 export default function PortfolioDashboard() {
   const [openStock, setOpenStock] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchPort = async () => {
+      const resp = await fetch(`${API_BASE_URL}/user/portfolio`, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+        }
+      });
+
+      if (!resp.ok) {
+        console.error("Failed to fetch portfolio data");
+        return;
+      }
+
+      const portfolioData = await resp.json();
+
+      // Map API response to the required format
+      const updatedStocks: STOCK[] = portfolioData.stocks.map((stock: any) => {
+        const stockTransactions = portfolioData.transactions.filter(
+          (transaction: any) => transaction.ticker_id === stock.ticker_id
+        );
+
+        const history: StockHistory[] = stockTransactions.map((transaction: any) => ({
+          date: new Date(transaction.CreatedAt).toISOString().split("T")[0],
+          qty: transaction.quantity,
+          rate: transaction.price,
+          amount: transaction.quantity * transaction.price,
+        }));
+
+        const avgPrice = calculateAvgPrice(history);
+
+        return {
+          name: stock.ticker_id,
+          quantity: stock.quantity,
+          marketPrice: stock.avg_price, // Replace with actual market price if available
+          returns: 0, // Calculate returns based on market price and avg price
+          returnsPct: "0%", // Calculate returns percentage
+          currentValue: stock.quantity * stock.avg_price, // Replace with actual market price if available
+          history,
+        };
+      });
+
+      // Update state with fetched data
+      console.log(updatedStocks);
+
+      const data = await resp.json()
+      console.log(data)
+    }
+    fetchPort()
+  }, [])
+
   const toggleDropdown = (stockName: string) => {
     setOpenStock(openStock === stockName ? null : stockName);
   };
@@ -153,10 +205,6 @@ export default function PortfolioDashboard() {
             <p className={`font-semibold ${holdingsSummary.totalReturns >= 0 ? "text-green-500" : "text-red-500"}`}>
               Total Returns {holdingsSummary.totalReturns >= 0 ? "+" : ""}
               ₹{holdingsSummary.totalReturns.toLocaleString()} ({holdingsSummary.totalReturnsPct}%)
-            </p>
-            <p className={`font-semibold ${holdingsSummary.oneDayReturns >= 0 ? "text-green-500" : "text-red-500"}`}>
-              1D Returns {holdingsSummary.oneDayReturns >= 0 ? "+" : ""}
-              ₹{holdingsSummary.oneDayReturns.toLocaleString()} ({holdingsSummary.oneDayReturnsPct}%)
             </p>
           </div>
         </div>
