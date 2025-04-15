@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import profilePic from '../images/user/user-06.png';
 import { API_BASE_URL } from '../config';
@@ -31,35 +31,24 @@ const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteInput, setDeleteInput] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Logout functionality
-  const handleLogout = () => {
-    // Clear localStorage
-    localStorage.clear();
-
-    // Clear all cookies
-    document.cookie.split(";").forEach(cookie => {
-      const eqPos = cookie.indexOf("=");
-      const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-    });
-
-    // Redirect to sign-in page
-    navigate('/auth/signin');
-  };
-
-  useEffect(() => {
+  React.useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
-      navigate('/auth/signin'); // use navigate here too
+      window.location.href = "/auth/signin";
     }
-  }, [navigate]);
+  }, []);
+
+
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("authToken");
+        const token = localStorage.getItem("authToken") // Assuming token is stored here
         const response = await fetch(`${API_BASE_URL}/user/profile`, {
           method: 'GET',
           headers: {
@@ -106,15 +95,17 @@ const Profile = () => {
             </div>
             <nav className="mt-6">
               <ul className="space-y-3">
+                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Logout</Link></li>
                 <li>
                   <button
-                    onClick={handleLogout}
                     className="block w-full text-left p-2 rounded hover:bg-gray-800"
+                    onClick={() => setShowDeleteModal(true)}
+                    type="button"
                   >
-                    Logout
+                    Permanently Delete Account
                   </button>
                 </li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Permanently Delete Account</Link></li>
+
               </ul>
             </nav>
           </aside>
@@ -133,6 +124,9 @@ const Profile = () => {
               <p className="text-xl font-bold text-green-600">₹{user.balance.toLocaleString()}</p>
             </div>
 
+
+
+
             <div className="mt-6">
               <div className="flex justify-between border-b pb-2">
                 <h3 className="text-lg font-semibold">Your Stocks</h3>
@@ -149,7 +143,7 @@ const Profile = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-md font-medium">Average Price: ₹{stock.avg_price}</p>
-                      <p className="text-md font-medium">Quantity: {stock.quantity}</p>
+                      <p className="text-md font-medium">Quantity: ₹{stock.quantity}</p>
                     </div>
                   </div>
                 ))}
@@ -162,10 +156,13 @@ const Profile = () => {
                 <Link to="/transactions" className="text-blue-500 text-sm">View All</Link>
               </div>
               <div className="mt-4 space-y-3">
-                {transactions.map((tx, index) => (
-                  <div key={`${tx.ticker}-${index}`} className="flex justify-between p-4 bg-gray-100 rounded-lg">
+                {transactions.map((tx) => (
+                  <div key={tx.ticker} className="flex justify-between p-4 bg-gray-100 rounded-lg">
                     <p className="text-md font-medium"><strong>{tx.ticker}</strong></p>
-                    <p className={`text-md font-medium ${tx.type === "BUY" ? "text-green-500" : tx.type === "SELL" ? "text-red-500" : ""}`}>
+                    <p
+                      className={`text-md font-medium ${tx.type === "BUY" ? "text-green-500" : tx.type === "SELL" ? "text-red-500" : ""
+                        }`}
+                    >
                       {tx.type}
                     </p>
                     <p className="text-md font-medium">Quantity: {tx.quantity}</p>
@@ -178,6 +175,75 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 text-red-600">Delete Account</h2>
+            <p className="mb-4">
+              This action is <span className="font-bold text-red-600">permanent</span> and cannot be undone.<br />
+              To confirm, type <span className="font-mono bg-gray-200 px-2 py-1 rounded">DELETE</span> below:
+            </p>
+            <input
+              type="text"
+              className="w-full border p-2 rounded mb-2"
+              value={deleteInput}
+              onChange={e => {
+                setDeleteInput(e.target.value);
+                setDeleteError('');
+              }}
+              placeholder="Type DELETE to confirm"
+              disabled={isDeleting}
+            />
+            {deleteError && <p className="text-red-500 mb-2">{deleteError}</p>}
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteInput('');
+                  setDeleteError('');
+                }}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                className={`px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 ${isDeleting ? "opacity-50" : ""}`}
+                onClick={async () => {
+                  if (deleteInput !== 'DELETE') {
+                    setDeleteError('You must type DELETE to confirm.');
+                    return;
+                  }
+                  setIsDeleting(true);
+                  try {
+                    const authToken = localStorage.getItem("authToken");
+                    const response = await fetch(`${API_BASE_URL}/user/delete`, {
+                      method: 'DELETE',
+                      headers: {
+                        Authorization: `Bearer ${authToken}`,
+                      },
+                    });
+                    if (!response.ok) {
+                      throw new Error('Failed to delete account');
+                    }
+                    // Optionally clear localStorage and redirect
+                    localStorage.clear();
+                    window.location.href = "/auth/signup"; // or your home/signin page
+                  } catch (err) {
+                    setDeleteError('Failed to delete account. Please try again.');
+                    setIsDeleting(false);
+                  }
+                }}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 };
