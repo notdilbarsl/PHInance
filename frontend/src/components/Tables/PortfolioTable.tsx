@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { API_BASE_URL } from "../../config";
 import Header from "../Header";
 
@@ -14,6 +14,7 @@ type StockHistory = {
 type STOCK = {
   name: string;
   quantity: number;
+  avgPrice: number;
   marketPrice: number;
   returns: number;
   returnsPct: string;
@@ -22,114 +23,12 @@ type STOCK = {
 };
 
 // Portfolio Summary Data
-const holdingsSummary = {
-  currentValue: 27530.74,
-  investedValue: 26300,
-  totalReturns: 1230.74,
-  totalReturnsPct: 4.68,
-  oneDayReturns: 230.5,
-  oneDayReturnsPct: 0.85,
-};
+const PortfolioDashboard = () => {
+  const [stocks, setStocks] = useState<STOCK[]>([]);
+  const [livePrices, setLivePrices] = useState<{ [key: string]: number }>({});
+  const [openStock, setOpenStock] = useState<string | null>(null); // State for tracking dropdown visibility
 
-// Stocks Data
-const stocks: STOCK[] = [
-  {
-    name: "ZOMATO",
-    quantity: 21,
-    marketPrice: 238.2,
-    returns: 498.96,
-    returnsPct: "11.08%",
-    currentValue: 5002.2,
-    history: [
-      { date: "2024-01-15", qty: 10, rate: 200, amount: 2000 },
-      { date: "2024-02-10", qty: 5, rate: 220, amount: 1100 },
-      { date: "2024-03-05", qty: 6, rate: 230, amount: 1380 },
-    ],
-  },
-  {
-    name: "SBI",
-    quantity: 3,
-    marketPrice: 760.95,
-    returns: -292.35,
-    returnsPct: "-11.35%",
-    currentValue: 2282.85,
-    history: [
-      { date: "2023-12-20", qty: 1, rate: 850, amount: 850 },
-      { date: "2024-01-10", qty: 2, rate: 870, amount: 1740 },
-    ],
-  },
-  {
-    name: "TATA STEEL",
-    quantity: 8,
-    marketPrice: 131.82,
-    returns: -288.96,
-    returnsPct: "-21.51%",
-    currentValue: 1054.56,
-    history: [
-      { date: "2023-11-05", qty: 4, rate: 160, amount: 640 },
-      { date: "2023-12-18", qty: 4, rate: 175, amount: 700 },
-    ],
-  },
-  {
-    name: "APPLE",
-    quantity: 5,
-    marketPrice: 172.88,
-    returns: 300.5,
-    returnsPct: "15.23%",
-    currentValue: 864.4,
-    history: [
-      { date: "2024-01-12", qty: 2, rate: 150, amount: 300 },
-      { date: "2024-02-20", qty: 3, rate: 160, amount: 480 },
-    ],
-  },
-  {
-    name: "GOOGLE",
-    quantity: 4,
-    marketPrice: 130.42,
-    returns: 250.76,
-    returnsPct: "18.04%",
-    currentValue: 521.68,
-    history: [
-      { date: "2024-01-10", qty: 2, rate: 110, amount: 220 },
-      { date: "2024-03-01", qty: 2, rate: 120, amount: 240 },
-    ],
-  },
-  {
-    name: "RELIANCE",
-    quantity: 6,
-    marketPrice: 2400.55,
-    returns: 1200.34,
-    returnsPct: "10.5%",
-    currentValue: 14403.3,
-    history: [
-      { date: "2024-01-18", qty: 3, rate: 2200, amount: 6600 },
-      { date: "2024-02-25", qty: 3, rate: 2300, amount: 6900 },
-    ],
-  },
-  {
-    name: "HDFC BANK",
-    quantity: 7,
-    marketPrice: 1600.25,
-    returns: 900.75,
-    returnsPct: "12.8%",
-    currentValue: 11201.75,
-    history: [
-      { date: "2024-01-14", qty: 4, rate: 1500, amount: 6000 },
-      { date: "2024-02-28", qty: 3, rate: 1550, amount: 4650 },
-    ],
-  }
-];
-
-// Function to Calculate Average Price from History
-const calculateAvgPrice = (history: StockHistory[]): number => {
-  const totalAmount = history.reduce((sum, entry) => sum + entry.amount, 0);
-  const totalQuantity = history.reduce((sum, entry) => sum + entry.qty, 0);
-  return totalQuantity > 0 ? totalAmount / totalQuantity : 0;
-};
-
-export default function PortfolioDashboard() {
-  const [openStock, setOpenStock] = useState<string | null>(null);
-
+  // Fetch Portfolio Data
   useEffect(() => {
     const fetchPort = async () => {
       const resp = await fetch(`${API_BASE_URL}/user/portfolio`, {
@@ -163,27 +62,91 @@ export default function PortfolioDashboard() {
         return {
           name: stock.ticker_id,
           quantity: stock.quantity,
-          marketPrice: stock.avg_price, // Replace with actual market price if available
-          returns: 0, // Calculate returns based on market price and avg price
-          returnsPct: "0%", // Calculate returns percentage
-          currentValue: stock.quantity * stock.avg_price, // Replace with actual market price if available
+          avgPrice: avgPrice,
+          marketPrice: 0, // Initially set to 0, will update later with live data
+          returns: 0, // Placeholder for now, will calculate later
+          returnsPct: "0%", // Placeholder for now, will calculate later
+          currentValue: 0, // Placeholder for now, will calculate later
           history,
         };
       });
 
       // Update state with fetched data
-      console.log(updatedStocks);
+      setStocks(updatedStocks);
+      fetchStockPrices(updatedStocks);
+    };
 
-      const data = await resp.json()
-      console.log(data)
+    fetchPort();
+  }, []);
+
+  // Calculate Average Price from History
+  const calculateAvgPrice = (history: StockHistory[]): number => {
+    const totalAmount = history.reduce((sum, entry) => sum + entry.amount, 0);
+    const totalQuantity = history.reduce((sum, entry) => sum + entry.qty, 0);
+    return totalQuantity > 0 ? totalAmount / totalQuantity : 0;
+  };
+
+  // Fetch Live Stock Prices
+  const fetchStockPrices = async (stocks: STOCK[]) => {
+    try {
+      const newStockData: { [key: string]: number } = {};
+
+      const fetches = stocks.map(async (stock) => {
+        try {
+          const resp = await fetch(`https://yfinance-bcyb.onrender.com/price/${stock.name}`);
+          const data = await resp.text();
+          newStockData[stock.name] = parseFloat(data);
+        } catch {
+          newStockData[stock.name] = 0; // Default to 0 if error fetching price
+        }
+      });
+
+      await Promise.all(fetches);
+      setLivePrices(newStockData);
+    } catch (error) {
+      console.error("Failed to fetch stock prices");
     }
-    fetchPort()
-  }, [])
+  };
 
+  // Calculate Holdings Summary Dynamically
+  const holdingsSummary = useMemo(() => {
+    const summary = stocks.reduce(
+      (summary, stock) => {
+        const livePrice = livePrices[stock.name] || 0;
+        const invested = stock.avgPrice * stock.quantity;
+        const current = livePrice * stock.quantity;
+        const returns = current - invested;
+
+        summary.investedValue += invested;
+        summary.currentValue += current;
+        summary.totalReturns += returns;
+
+        return summary;
+      },
+      {
+        investedValue: 0,
+        currentValue: 0,
+        totalReturns: 0,
+        totalReturnsPct: 0,
+        oneDayReturns: 0, // Placeholder for now
+        oneDayReturnsPct: 0, // Placeholder for now
+      }
+    );
+
+    summary.totalReturnsPct =
+      summary.investedValue > 0
+        ? parseFloat(((summary.totalReturns / summary.investedValue) * 100).toFixed(2))
+        : 0;
+
+    return summary;
+  }, [stocks, livePrices]);
+
+  // Toggle dropdown visibility for stock history
   const toggleDropdown = (stockName: string) => {
     setOpenStock(openStock === stockName ? null : stockName);
   };
 
+  // Return JSX with the dynamic portfolio values
   return (
     <div className="w-full h-screen px-12 py-6 bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-md">
@@ -222,7 +185,11 @@ export default function PortfolioDashboard() {
             </thead>
             <tbody>
               {stocks.map((stock) => {
-                const avgPrice = calculateAvgPrice(stock.history);
+                const livePrice = livePrices[stock.name] || 0;
+                const currentValue = stock.quantity * livePrice;
+                const returns = currentValue - stock.avgPrice * stock.quantity;
+                const returnsPct = stock.avgPrice > 0 ? ((returns / (stock.avgPrice * stock.quantity)) * 100).toFixed(2) : "0.00%";
+
                 return (
                   <React.Fragment key={stock.name}>
                     <tr className="border-b">
@@ -231,7 +198,7 @@ export default function PortfolioDashboard() {
                           <div>
                             <div className="font-medium">{stock.name}</div>
                             <div className="text-xs text-gray-500">
-                              QTY {stock.quantity} • AVG. ₹{avgPrice.toFixed(2)}
+                              QTY {stock.quantity} • AVG. ₹{stock.avgPrice.toFixed(2)}
                             </div>
                           </div>
                           <button
@@ -242,17 +209,18 @@ export default function PortfolioDashboard() {
                           </button>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-lg">₹{stock.marketPrice.toFixed(2)}</td>
-                      <td className={`px-6 py-4 font-semibold text-lg ${stock.returns >= 0 ? "text-green-500" : "text-red-500"}`}>
-                        {stock.returns >= 0 ? "+" : ""}
-                        ₹{stock.returns.toFixed(2)} ({stock.returnsPct})
+                      <td className="px-6 py-4 text-lg">₹{livePrice.toFixed(2)}</td>
+                      <td className={`px-6 py-4 font-semibold text-lg ${returns >= 0 ? "text-green-500" : "text-red-500"}`}>
+                        {returns >= 0 ? "+" : ""}
+                        ₹{returns.toFixed(2)} ({returnsPct}%)
                       </td>
-                      <td className="px-6 py-4 text-lg">₹{stock.currentValue.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-lg">₹{currentValue.toFixed(2)}</td>
                     </tr>
 
+                    {/* Stock History Dropdown */}
                     {openStock === stock.name && (
                       <tr>
-                        <td colSpan={5} className="px-6 py-3 bg-gray-50">
+                        <td colSpan={4} className="px-6 py-3 bg-gray-50">
                           <h3 className="font-semibold mb-2">HISTORY</h3>
                           <table className="w-full text-sm">
                             <thead>
@@ -286,4 +254,6 @@ export default function PortfolioDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default PortfolioDashboard;
