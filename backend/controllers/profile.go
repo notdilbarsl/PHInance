@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sayymeer/feinance-backend/models"
+	"gorm.io/gorm"
 )
 
 func ProfileHandler(c *gin.Context) {
@@ -52,4 +53,44 @@ func ProfileHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, profileRes)
 	return
+}
+
+type BalanceReq struct {
+	Add float64 `json:"add"`
+}
+
+func AddBalanceHandler(c *gin.Context) {
+	userIDInterface, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in context"})
+		return
+	}
+
+	var req BalanceReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	var user models.User
+	if err := phiDb.First(&user, userIDInterface).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch user"})
+		}
+		return
+	}
+
+	user.Balance += float32(req.Add)
+
+	if err := phiDb.Save(&user).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update balance"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Balance updated successfully",
+		"balance": user.Balance,
+	})
 }

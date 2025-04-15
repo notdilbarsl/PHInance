@@ -70,3 +70,9 @@ func BalanceHandler(c *gin.Context) {
 	phiDb.First(&user, "id = ?", user_id)
 	c.JSON(http.StatusOK, user.Balance)
 }
+
+func DeleteHandler(c *gin.Context) {
+	userId, _ := c.Get("user_id")
+	phiDb.Delete(&models.User{}, "user_id = ?", userId)
+	c.JSON(http.StatusOK, gin.H{"message": "Ok"})
+}
