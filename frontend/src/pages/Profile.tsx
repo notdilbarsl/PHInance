@@ -91,8 +91,6 @@ const Profile = () => {
             </div>
             <nav className="mt-6">
               <ul className="space-y-3">
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Basic Details</Link></li>
-                <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Change User Details</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Change Password</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Logout</Link></li>
                 <li><Link to="#" className="block p-2 rounded hover:bg-gray-800">Permanently Delete Account</Link></li>
@@ -133,7 +131,7 @@ const Profile = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-md font-medium">Average Price: ₹{stock.avg_price}</p>
-                      <p className="text-md font-medium">Quantity: ₹{stock.quantity}</p>
+                      <p className="text-md font-medium">Quantity: {stock.quantity}</p>
                     </div>
                   </div>
                 ))}
