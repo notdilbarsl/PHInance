@@ -102,18 +102,18 @@ const ECommerce: React.FC = () => {
   };
 
   return (
-    <div className="flex gap-20 ml-20 w-full">
-      <div className="w-1/2">
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-20 px-4 lg:px-20 py-8 w-full overflow-auto">
+      <div className="w-full lg:w-1/2">
         <h2 className="text-xl font-bold mb-4">All Stocks</h2>
         <TableOne stocks={stocks} onAddToWatchlist={addToWatchlist} />
       </div>
-      <div className="w-1/2">
+      <div className="w-full lg:w-1/2">
         <h2 className="text-xl font-bold mb-4">Your Watchlist</h2>
         <TableTwo watchlistStocks={watchlistStocks} onRemoveFromWatchlist={removeFromWatchlist} />
       </div>
     </div>
-
   );
+  
 };
 
 export default ECommerce;
