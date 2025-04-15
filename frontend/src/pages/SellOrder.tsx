@@ -200,6 +200,7 @@ const SellOrder = () => {
               <input
                 type="number"
                 value={limitPrice}
+                readOnly
                 onChange={(e) => setLimitPrice(parseFloat(e.target.value))}
                 className="w-full p-2 mt-1 border rounded-md focus:ring-blue-500"
               />

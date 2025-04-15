@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import React from 'react';
+import axios from "axios";
+import { useBalance } from "../components/Header/BalanceContext";
+
 const LearningCentre = () => {
   React.useEffect(() => {
     const authToken = localStorage.getItem("authToken");
@@ -32,26 +35,40 @@ const LearningCentre = () => {
     }
   }, []);
 
-  const handleVideoComplete = (videoId: string): void => {
-    // Only add video to completed list if it's not already there
+  const { updateBalance } = useBalance();
+
+  const awardCoins = async (amount) => {
+    const authToken = localStorage.getItem("authToken");
+    await axios.post(
+      "https://phinance-3.onrender.com/user/addbalance",
+      { add: amount },
+      { headers: { Authorization: `Bearer ${authToken}` } }
+    );
+    updateBalance(); // Refresh the balance from backend
+  };
+
+
+  const handleVideoComplete = async (videoId: string): Promise<void> => {
     if (!completedItems.videos.includes(videoId)) {
       const updatedItems = {
         ...completedItems,
         videos: [...completedItems.videos, videoId],
-        coins: completedItems.coins + 50, // Add 50 coins when a video is watched
+        coins: completedItems.coins + 50, // (optional, for local tracking)
       };
-
+  
       setCompletedItems(updatedItems);
-
-      // Save to localStorage
+  
       try {
         localStorage.setItem('completedLearningItems', JSON.stringify(updatedItems));
+        // Add coins to backend and update global balance
+        await awardCoins(50);
         console.log(`Video ${videoId} completed! +50 coins awarded.`);
       } catch (error) {
-        console.error('Failed to save learning progress:', error);
+        console.error('Failed to save learning progress or update balance:', error);
       }
     }
   };
+  
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleQuizComplete = (quizId: string, score: number, reward: number): void => {
@@ -74,7 +91,7 @@ const LearningCentre = () => {
       <Breadcrumb pageName="Learning Centre" />
 
       {/* Total Earned Coins */}
-      <div className="mb-5 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+      {/* <div className="mb-5 rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex items-center justify-between">
           <h4 className="text-xl font-semibold text-black dark:text-white">Learning Rewards</h4>
           <div className="flex items-center space-x-2 rounded-md bg-primary/10 px-4 py-2">
@@ -85,7 +102,7 @@ const LearningCentre = () => {
           </div>
         </div>
         <p className="text-sm text-body">Earn coins by watching videos and completing quizzes</p>
-      </div>
+      </div> */}
 
       {/* Tabs for All Courses, Videos, Quizzes */}
       <div className="mb-8">
