@@ -436,11 +436,6 @@ const QuizPage = () => {
 
   // Each index: which option user selected
   const [selectedOptions, setSelectedOptions] = useState<number[]>(Array(5).fill(null));
-
-  // Show immediate feedback: either "Correct!" or "Incorrect + correct answer"
-  const [feedback, setFeedback] = useState<(string | null)[]>(Array(5).fill(null));
-
-  // Additional states
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizComplete, setQuizComplete] = useState(false);
   const [score, setScore] = useState(0);
@@ -519,17 +514,8 @@ const QuizPage = () => {
     const updatedOptions = [...selectedOptions];
     updatedOptions[questionIndex] = optionIndex;
     setSelectedOptions(updatedOptions);
-
-    // Provide feedback
-    const correctIndex = questions[questionIndex].correctAnswer;
-    const isCorrect = optionIndex === correctIndex;
-    const correctAnswerText = questions[questionIndex].options[correctIndex];
-
-    const updatedFeedback = [...feedback];
-    updatedFeedback[questionIndex] = isCorrect
-      ? '✅ Correct!'
-      : `❌ Incorrect!`;
-    setFeedback(updatedFeedback);
+    
+    // All feedback functionality removed
   };
 
   // Move to the next question
@@ -718,7 +704,6 @@ const QuizPage = () => {
                     // Reset states
                     setQuizComplete(false);
                     setSelectedOptions(Array(5).fill(null));
-                    setFeedback(Array(5).fill(null));
                     setCurrentQuestion(0);
                     setTimeRemaining(metadata.timeLimit * 60);
                   }}
@@ -778,13 +763,6 @@ const QuizPage = () => {
                     );
                   })}
                 </div>
-
-                {/* Immediate Feedback for current question */}
-                {feedback[currentQuestion] && (
-                  <div className="mt-4 text-sm font-semibold">
-                    {feedback[currentQuestion]}
-                  </div>
-                )}
               </div>
 
               {/* Navigation Buttons */}
