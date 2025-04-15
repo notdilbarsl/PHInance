@@ -10,11 +10,6 @@ const AIPoweredPrediction = () => {
 
 
   const userStocks = [
-    { name: "AAPL" }, // Apple Inc.
-    { name: "GOOGL" }, // Alphabet Inc. (Google)
-    { name: "MSFT" }, // Microsoft Corporation
-    { name: "AMZN" }, // Amazon.com, Inc.
-    { name: "TSLA" }, // Tesla, Inc.
 
     // National Stock Exchange (NSE) Listed Stocks
     { name: "RELIANCE" }, // Reliance Industries Limited
