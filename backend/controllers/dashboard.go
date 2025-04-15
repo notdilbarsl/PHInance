@@ -58,17 +58,28 @@ func DashboardHandler(c *gin.Context) {
 }
 
 func WatchlistHandler(c *gin.Context) {
-	userID, _ := c.Get("user_id")
+	userIDRaw, _ := c.Get("user_id")
 	ticker := c.Param("ticker")
 
 	var watchlistEntry models.Watchlist
-
+	var userID uint
+	switch v := userIDRaw.(type) {
+	case float64:
+		userID = uint(v)
+	case int:
+		userID = uint(v)
+	case uint:
+		userID = v
+	default:
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID type"})
+		return
+	}
 	// Check if the ticker is already in the user's watchlist
 	err := phiDb.Where("user_id = ? AND ticker = ?", userID, ticker).First(&watchlistEntry).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// If not found, add it to the watchlist
 		newEntry := models.Watchlist{
-			UserID: userID.(uint), // Ensure correct type
+			UserID: userID, // Ensure correct type
 			Ticker: ticker,
 		}
 

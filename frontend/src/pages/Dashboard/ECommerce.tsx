@@ -62,14 +62,14 @@ const ECommerce: React.FC = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/user/watchlist/${ticker}`, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
           // 'Content-Type': 'application/json',
         },
         // body: JSON.stringify({ symbol: ticker }),
       });
-      
+
       if (!response.ok) throw new Error("Add to watchlist failed");
 
       const updated = stocks.map(stock =>
@@ -87,7 +87,7 @@ const ECommerce: React.FC = () => {
 
     try {
       const response = await fetch(`${API_BASE_URL}/user/watchlist/${ticker}`, {
-        method: 'DELETE',
+        method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error("Remove failed");
